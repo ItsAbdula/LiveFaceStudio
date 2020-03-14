@@ -7,15 +7,15 @@ public class WebCam : MonoBehaviour
     public Camera cam;
     public GameObject objScreen;
 
-    WebCamTexture _webCamTexture = null;
-    ScreenOrientation _screenOrientation = ScreenOrientation.Portrait;
-    CameraClearFlags _cameraClearFlags;
+    private WebCamTexture _webCamTexture = null;
+    private ScreenOrientation _screenOrientation = ScreenOrientation.Portrait;
+    private CameraClearFlags _cameraClearFlags;
 
-    void Awake()
+    private void Awake()
     {
-        foreach(Camera c in Camera.allCameras)
+        foreach (Camera c in Camera.allCameras)
         {
-            if( c != cam )
+            if (c != cam)
             {
                 c.cullingMask = ~(1 << objScreen.layer);
             }
@@ -26,8 +26,8 @@ public class WebCam : MonoBehaviour
         cam.farClipPlane = cam.nearClipPlane + 1f;
         objScreen.transform.localPosition = new Vector3(0f, 0f, cam.farClipPlane * .5f);
         WebCamDevice[] devices = WebCamTexture.devices;
-        
-        if(devices.Length>0)
+
+        if (devices.Length > 0)
         {
             _webCamTexture = new WebCamTexture(Screen.width, Screen.height);
             objScreen.GetComponent<Renderer>().material.mainTexture = _webCamTexture;
@@ -40,7 +40,7 @@ public class WebCam : MonoBehaviour
         show(true);
     }
 
-    void setOrientation(ScreenOrientation sc)
+    private void setOrientation(ScreenOrientation sc)
     {
         float h = Mathf.Tan(cam.fieldOfView * Mathf.Deg2Rad * .5f) * objScreen.transform.localPosition.z * .2f;
 
@@ -52,33 +52,33 @@ public class WebCam : MonoBehaviour
         if (ScreenOrientation.Landscape == sc)
         {
             objScreen.transform.localRotation = Quaternion.Euler(180f, 180f, 0f);
-            objScreen.transform.localScale = new Vector3(cam.aspect * h, 1f, h)/2;
+            objScreen.transform.localScale = new Vector3(cam.aspect * h, 1f, h) / 2;
         }
         else if (ScreenOrientation.LandscapeLeft == sc)
         {
             objScreen.transform.localRotation = Quaternion.Euler(180f, 180f, 0f);
-            objScreen.transform.localScale = new Vector3(cam.aspect * h, 1f, h)/2;
+            objScreen.transform.localScale = new Vector3(cam.aspect * h, 1f, h) / 2;
         }
         else if (ScreenOrientation.LandscapeRight == sc)
         {
             objScreen.transform.localRotation = Quaternion.Euler(0f, 0f, 0f);
-            objScreen.transform.localScale = new Vector3(cam.aspect * h, 1f, h)/2;
+            objScreen.transform.localScale = new Vector3(cam.aspect * h, 1f, h) / 2;
         }
         else if (ScreenOrientation.Portrait == sc)
         {
             objScreen.transform.localRotation = Quaternion.Euler(90f, -90f, 90f);
-            objScreen.transform.localScale = new Vector3(h, 1f, cam.aspect * h)/2;
+            objScreen.transform.localScale = new Vector3(h, 1f, cam.aspect * h) / 2;
         }
         else if (ScreenOrientation.PortraitUpsideDown == sc)
         {
             objScreen.transform.localRotation = Quaternion.Euler(90f, 90f, -90f);
-            objScreen.transform.localScale = new Vector3(h, 1f, cam.aspect * h)/2;
+            objScreen.transform.localScale = new Vector3(h, 1f, cam.aspect * h) / 2;
         }
     }
 
-    IEnumerator coroutineOrientation()
+    private IEnumerator coroutineOrientation()
     {
-        while(true)
+        while (true)
         {
             if (_screenOrientation != Screen.orientation)
             {
@@ -91,14 +91,14 @@ public class WebCam : MonoBehaviour
 
     public void show(bool flag)
     {
-        if(null == _webCamTexture)
+        if (null == _webCamTexture)
         {
             return;
         }
 
-        if(flag)
+        if (flag)
         {
-            if(Camera.main!=cam)
+            if (Camera.main != cam)
             {
                 _cameraClearFlags = Camera.main.clearFlags;
                 Camera.main.clearFlags = CameraClearFlags.Depth;
@@ -110,7 +110,7 @@ public class WebCam : MonoBehaviour
         }
         else
         {
-            if(Camera.main != cam)
+            if (Camera.main != cam)
             {
                 Camera.main.clearFlags = _cameraClearFlags;
             }
