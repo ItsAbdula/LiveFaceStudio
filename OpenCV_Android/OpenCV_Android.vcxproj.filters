@@ -5,6 +5,5 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="OpenCV_Android.h" />
-    <ClInclude Include="pch.h" />
   </ItemGroup>
 </Project>
