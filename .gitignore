@@ -10,6 +10,9 @@
 /MPUnity/[Ll]ogs/
 /MPUnity/[Mm]emoryCaptures/
 
+/ARM/
+/OpenCV_Android/ARM
+
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/MPUnity/[Aa]ssets/**/*.meta
 
