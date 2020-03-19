@@ -1,0 +1,2 @@
+﻿  Source.cpp
+LINK : fatal error LNK1104: 'opencv_core420d.lib' 파일을 열 수 없습니다.
