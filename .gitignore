@@ -66,3 +66,5 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+OpenCV_Windows/bin/opencv_world420.dll
+OpenCV_Windows/bin/opencv_world420d.dll
