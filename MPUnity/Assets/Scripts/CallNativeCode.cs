@@ -15,10 +15,15 @@ public class CallNativeCode : MonoBehaviour
 #endif
 
     public Button btnFlipImage;
+    public Button btnDetectImage;
     public Image imageBlack;
+    public Image detectImage;
 
     [DllImport(dllName)]
     private static extern void FlipImage(ref Color32[] rawImage, int width, int height);
+
+    [DllImport(dllName)]
+    private static extern void DetectFace(ref Color32[] rawImage, int width, int height);
 
     [DllImport(dllName)]
     private static extern float Foopluginmethod();
@@ -27,6 +32,7 @@ public class CallNativeCode : MonoBehaviour
     void Start()
     {
         btnFlipImage.onClick.AddListener(CallFlipImage);
+        btnDetectImage.onClick.AddListener(CallDetectFace);
     }
 
     // Update is called once per frame
@@ -41,6 +47,14 @@ public class CallNativeCode : MonoBehaviour
         FlipImage(ref blackImage, 504, 670);
         imageBlack.sprite.texture.SetPixels32(blackImage);
         imageBlack.sprite.texture.Apply();
+    }
+
+    private void CallDetectFace()
+    {
+        var blackImage = imageBlack.sprite.texture.GetPixels32();
+        DetectFace(ref blackImage, 504, 670);
+        detectImage.sprite.texture.SetPixels32(blackImage);
+        detectImage.sprite.texture.Apply();
     }
 
     private void OnGUI()
