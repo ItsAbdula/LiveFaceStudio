@@ -30,19 +30,20 @@ int main(int argc, const char** argv)
         );
         cascadeName = parser.get<string>("cascade");
         nestedCascadeName = parser.get<string>("nested-cascade");
+
         scale = parser.get<double>("scale");
-        if (scale < 1)
-                scale = 1;
+        scale = std::max(1.0, scale);
+
         tryflip = parser.has("try-flip");
         inputName = parser.get<string>("@filename");
-        if (!parser.check())
+        if (parser.check() == false)
         {
                 parser.printErrors();
                 return 0;
         }
-        if (!nestedCascade.load(samples::findFileOrKeep(nestedCascadeName)))
+        if (nestedCascade.load(samples::findFileOrKeep(nestedCascadeName)) == false)
                 cerr << "WARNING: Could not load classifier cascade for nested objects" << endl;
-        if (!cascade.load(samples::findFile(cascadeName)))
+        if (cascade.load(samples::findFile(cascadeName)) == false)
         {
                 cerr << "ERROR: Could not load classifier cascade" << endl;
                 return -1;
@@ -52,7 +53,7 @@ int main(int argc, const char** argv)
                 cout << "Not Input Name!" << endl;
                 return 1;
         }
-        else if (!inputName.empty())
+        else if (inputName.empty() == false)
         {
                 image = imread(samples::findFileOrKeep(inputName), IMREAD_COLOR);
                 if (image.empty())
@@ -66,11 +67,12 @@ int main(int argc, const char** argv)
         }
 
         cout << "Detecting face(s) in " << inputName << endl;
-        if (!image.empty())
+        if (image.empty() == false)
         {
                 detectAndDraw(image, cascade, nestedCascade, scale, tryflip);
                 waitKey(0);
         }
+
         return 0;
 }
 void detectAndDraw(Mat& img, CascadeClassifier& cascade,
@@ -135,11 +137,13 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade,
                         circle(img, center, radius, color, 3, 8, 0);
                 }
                 else
+                {
                         rectangle(img, Point(cvRound(r.x*scale), cvRound(r.y*scale)),
                                 Point(cvRound((r.x + r.width - 1)*scale), cvRound((r.y + r.height - 1)*scale)),
                                 color, 3, 8, 0);
-                if (nestedCascade.empty())
-                        continue;
+                }
+
+                if (nestedCascade.empty()) continue;
                 smallImgROI = smallImg(r);
                 nestedCascade.detectMultiScale(smallImgROI, nestedObjects,
                         1.1, 2, 0
@@ -157,5 +161,6 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade,
                         circle(img, center, radius, color, 3, 8, 0);
                 }
         }
+
         imshow("result", img);
 }
