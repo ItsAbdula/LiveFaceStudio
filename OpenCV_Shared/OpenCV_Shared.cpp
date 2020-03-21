@@ -76,11 +76,12 @@ extern "C"
                 | CASCADE_SCALE_IMAGE,
                 Size(30, 30));
 
-            for (auto nr : nestedObjects)
+            for (auto const &nr : nestedObjects)
             {
                 center.x = cvRound((r.x + nr.x + nr.width * 0.5));
                 center.y = cvRound((r.y + nr.y + nr.height * 0.5));
                 radius = cvRound((nr.width + nr.height) * 0.25);
+
                 circle(image, center, radius, color, 3, 8, 0);
             }
         }
