@@ -20,18 +20,15 @@ using namespace cv;
 
 struct Color32
 {
-	uchar red;
-	uchar green;
-	uchar blue;
-	uchar alpha;
+    uchar red;
+    uchar green;
+    uchar blue;
+    uchar alpha;
 };
 
 extern "C"
 {
-	DLLEXPORT void STDCALL DetectFace(Color32 **rawImage, int width, int height);
-	namespace OpenCV_Shared
-	{
-		DLLEXPORT void STDCALL FlipImage(Color32 **rawImage, int width, int height);
-		DLLEXPORT float STDCALL Foopluginmethod();
-	}
+    DLLEXPORT void STDCALL DetectFace(Color32 **rawImage, int width, int height);
+    DLLEXPORT void STDCALL FlipImage(Color32 **rawImage, int width, int height);
+    DLLEXPORT float STDCALL Foopluginmethod();
 }
