@@ -30,10 +30,21 @@ public class Test01 : MonoBehaviour
     private void CallDetectFace()
     {
         var inputData = inputTex.GetPixels32();
-        System.Array.Reverse(inputData);
+        Color32[] temp = new Color32[inputTex.width];
+        for (int i = 0; i < inputTex.height / 2; i++)
+        {
+            System.Array.ConstrainedCopy(inputData, i * inputTex.width, temp, 0, inputTex.width);
+            System.Array.ConstrainedCopy(inputData, (inputTex.height - i - 1) * inputTex.width, inputData, i * inputTex.width, inputTex.width);
+            System.Array.ConstrainedCopy(temp, 0, inputData, (inputTex.height - i - 1) * inputTex.width, inputTex.width);
+        }
 
         NativeCodes.DetectFace(ref inputData, inputTex.width, inputTex.height);
-        System.Array.Reverse(inputData);
+        for (int i = 0; i < inputTex.height / 2; i++)
+        {
+            System.Array.ConstrainedCopy(inputData, i * inputTex.width, temp, 0, inputTex.width);
+            System.Array.ConstrainedCopy(inputData, (inputTex.height - i - 1) * inputTex.width, inputData, i * inputTex.width, inputTex.width);
+            System.Array.ConstrainedCopy(temp, 0, inputData, (inputTex.height - i - 1) * inputTex.width, inputTex.width);
+        }
 
         resultTex.SetPixels32(inputData);
         resultTex.Apply();
