@@ -4,14 +4,17 @@ extern "C"
 {
     DLLEXPORT void STDCALL FlipImage(Color32 **rawImage, int width, int height)
     {
-        cv::Mat image(height, width, CV_8UC4, *rawImage);
+        // cv::Mat image(height, width, CV_8UC4, *rawImage);
 
-        cv::flip(image, image, -1);
+        // cv::flip(image, image, -1);
     }
 
     DLLEXPORT void STDCALL DetectFace(Color32 **rawImage, int width, int height)
     {
         Mat image(height, width, CV_8UC4, *rawImage);
+		// 뒤집어야 인식이 된다
+		cv::flip(image, image, -1);
+
         string cascadeName, nestedCascadeName;
         CascadeClassifier cascade, nestedCascade;
 
@@ -85,6 +88,8 @@ extern "C"
                 circle(image, center, radius, color, 3, 8, 0);
             }
         }
+		// 다시 원래대로
+		cv::flip(image, image, -1);
     }
 
     DLLEXPORT float STDCALL Foopluginmethod()

@@ -16,8 +16,9 @@ public class CallNativeCode : MonoBehaviour
 
     public Button btnFlipImage;
     public Button btnDetectImage;
-    public Image imageBlack;
-    public Image detectImage;
+    public Image originalImage;
+
+    public RawImage detectedImage;
 
     [DllImport(dllName)]
     private static extern void FlipImage(ref Color32[] rawImage, int width, int height);
@@ -31,30 +32,32 @@ public class CallNativeCode : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        btnFlipImage.onClick.AddListener(CallFlipImage);
-        btnDetectImage.onClick.AddListener(CallDetectFace);
+        // btnFlipImage.onClick.AddListener(CallFlipImage);
+        // btnDetectImage.onClick.AddListener(CallDetectFace);
     }
 
-    // Update is called once per frame
-    void Update()
+    private float timer = 0;
+    private void Update()
     {
+        timer += Time.deltaTime;
 
+        if(timer > 0.05f)
+        {
+            detectedImage.texture = GetDetectedTexture();
+            timer = 0;
+        }
     }
 
-    private void CallFlipImage()
+    private Texture2D GetDetectedTexture()
     {
-        var blackImage = imageBlack.sprite.texture.GetPixels32();
-        FlipImage(ref blackImage, 504, 670);
-        imageBlack.sprite.texture.SetPixels32(blackImage);
-        imageBlack.sprite.texture.Apply();
-    }
+        DetectFace(ref WebCam.image, WebCam.Width, WebCam.Height);
 
-    private void CallDetectFace()
-    {
-        var blackImage = imageBlack.sprite.texture.GetPixels32();
-        DetectFace(ref blackImage, 504, 670);
-        detectImage.sprite.texture.SetPixels32(blackImage);
-        detectImage.sprite.texture.Apply();
+        Texture2D newTexture = new Texture2D(WebCam.Width, WebCam.Height, TextureFormat.RGB24, false, false);
+        newTexture.SetPixels32(WebCam.image, 0);
+        newTexture.Apply();
+        detectedImage.texture = newTexture;
+
+        return newTexture;
     }
 
     private void OnGUI()
