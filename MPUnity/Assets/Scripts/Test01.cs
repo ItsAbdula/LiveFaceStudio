@@ -30,10 +30,12 @@ public class Test01 : MonoBehaviour
     private void CallDetectFace()
     {
         var inputData = inputTex.GetPixels32();
+        System.Array.Reverse(inputData);
 
         NativeCodes.DetectFace(ref inputData, inputTex.width, inputTex.height);
         System.Array.Reverse(inputData);
 
+        resultTex.SetPixels32(inputData);
         resultTex.Apply();
     }
 
