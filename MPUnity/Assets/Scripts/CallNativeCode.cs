@@ -29,7 +29,6 @@ public class CallNativeCode : MonoBehaviour
     [DllImport(dllName)]
     private static extern float Foopluginmethod();
 
-    // Start is called before the first frame update
     private void Start()
     {
         // btnFlipImage.onClick.AddListener(CallFlipImage);
@@ -37,14 +36,18 @@ public class CallNativeCode : MonoBehaviour
     }
 
     private float timer = 0;
+
     private void Update()
     {
         timer += Time.deltaTime;
 
-        if(timer > 0.05f)
+        if (timer > 0.05f)
         {
-            detectedImage.texture = GetDetectedTexture();
             timer = 0;
+
+            if (WebCam.canUseDevices == false) return;
+
+            detectedImage.texture = GetDetectedTexture();
         }
     }
 
