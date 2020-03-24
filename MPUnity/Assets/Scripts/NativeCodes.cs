@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Runtime.InteropServices;
 
-public class CallNativeCode : MonoBehaviour
+public class NativeCodes : MonoBehaviour
 {
-    public static CallNativeCode callNativeCode;
+    public static NativeCodes nativeCodes;
 
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
     private const string dllName = "OpenCV_Windows";
