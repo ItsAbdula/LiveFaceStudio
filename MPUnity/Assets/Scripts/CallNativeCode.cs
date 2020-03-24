@@ -6,7 +6,7 @@ using System.Runtime.InteropServices;
 
 public class CallNativeCode : MonoBehaviour
 {
-#if UNITY_EDITOR_WIN
+#if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
     private const string dllName = "OpenCV_Windows";
 #elif UNITY_ANDROID
     private const string dllName = "OpenCV_Android";
@@ -29,16 +29,15 @@ public class CallNativeCode : MonoBehaviour
     private static extern float Foopluginmethod();
 
     // Start is called before the first frame update
-    void Start()
+    private void Start()
     {
         btnFlipImage.onClick.AddListener(CallFlipImage);
         btnDetectImage.onClick.AddListener(CallDetectFace);
     }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-
     }
 
     private void CallFlipImage()
