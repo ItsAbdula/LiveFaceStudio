@@ -6,9 +6,11 @@ public class WebCam : MonoBehaviour
 {
     public GameObject objScreen;
 
-    private WebCamTexture _webCamTexture = null;
+    static private WebCamTexture _webCamTexture = null;
     private ScreenOrientation _screenOrientation = ScreenOrientation.Portrait;
     private CameraClearFlags _cameraClearFlags;
+
+    static public Color32[] image = new Color32[Screen.width * Screen.height];
 
     private void Awake()
     {
@@ -18,6 +20,7 @@ public class WebCam : MonoBehaviour
         if (devices.Length > 0)
         {
             _webCamTexture = new WebCamTexture(Screen.width, Screen.height);
+
             objScreen.GetComponent<Renderer>().material.mainTexture = _webCamTexture;
         }
 
@@ -25,6 +28,14 @@ public class WebCam : MonoBehaviour
         StartCoroutine(coroutineOrientation());
 
         show(true);
+    }
+
+    private void Update()
+    {
+        if (_webCamTexture.isPlaying)
+        {
+            image = _webCamTexture.GetPixels32();
+        }
     }
 
     private IEnumerator coroutineOrientation()
@@ -55,6 +66,21 @@ public class WebCam : MonoBehaviour
         {
             _webCamTexture.Pause();
             objScreen.SetActive(false);
+        }
+    }
+
+   static public int Width
+    {
+        get
+        {
+            return _webCamTexture.width;
+        }
+    }
+    static public int Height
+    {
+        get
+        {
+            return _webCamTexture.height;
         }
     }
 }
