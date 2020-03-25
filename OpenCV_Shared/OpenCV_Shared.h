@@ -28,7 +28,7 @@ struct Color32
 
 extern "C"
 {
-    DLLEXPORT void STDCALL DetectFace(Color32 **rawImage, int width, int height);
-    DLLEXPORT void STDCALL FlipImage(Color32 **rawImage, int width, int height);
+    DLLEXPORT void STDCALL DetectFace(unsigned char *rawImage, int width, int height);
+    DLLEXPORT void STDCALL FlipImage(unsigned char *rawImage, int width, int height);
     DLLEXPORT float STDCALL Foopluginmethod();
 }

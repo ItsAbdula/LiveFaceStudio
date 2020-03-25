@@ -2,16 +2,20 @@
 
 extern "C"
 {
-    DLLEXPORT void STDCALL FlipImage(Color32 **rawImage, int width, int height)
+    DLLEXPORT void STDCALL FlipImage(unsigned char *rawImage, int width, int height)
     {
-        cv::Mat image(height, width, CV_8UC4, *rawImage);
+        void* byteToVoid = static_cast<void*>(rawImage);
+
+        cv::Mat image(height, width, CV_8UC4, byteToVoid);
 
         cv::flip(image, image, -1);
     }
 
-    DLLEXPORT void STDCALL DetectFace(Color32 **rawImage, int width, int height)
+    DLLEXPORT void STDCALL DetectFace(unsigned char *rawImage, int width, int height)
     {
-        Mat image(height, width, CV_8UC4, *rawImage);
+        void* byteToVoid = static_cast<void*>(rawImage);
+
+        Mat image(height, width, CV_8UC4, byteToVoid);
 
         string cascadeName, nestedCascadeName;
         CascadeClassifier cascade, nestedCascade;
