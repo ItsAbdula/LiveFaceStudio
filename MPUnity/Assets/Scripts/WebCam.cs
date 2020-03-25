@@ -22,6 +22,7 @@ public class WebCam : MonoBehaviour
 
     static private WebCamTexture _webCamTexture = null;
     static public bool canUseDevices = false;
+    static public int devicesCount = -1;
     static public Color32[] image = new Color32[Screen.width * Screen.height];
 
     public GameObject objScreen;
@@ -56,6 +57,10 @@ public class WebCam : MonoBehaviour
     private void updateDevices()
     {
         WebCamDevice[] devices = WebCamTexture.devices;
+        if (devices.Length == devicesCount) return;
+
+        devicesCount = devices.Length;
+
         if (devices.Length == 0)
         {
             canUseDevices = false;
