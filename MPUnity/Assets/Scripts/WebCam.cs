@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_ANDROID
+using UnityEngine.Android;
+#endif
+using UnityEngine.UI;
 
 public class WebCam : MonoBehaviour
 {
@@ -26,12 +30,20 @@ public class WebCam : MonoBehaviour
     static public Color32[] image = new Color32[Screen.width * Screen.height];
 
     public GameObject objScreen;
+    public Text logText;
 
     private ScreenOrientation _screenOrientation = ScreenOrientation.Portrait;
     private CameraClearFlags _cameraClearFlags;
 
     private void Awake()
     {
+#if UNITY_ANDROID
+        if(Permission.HasUserAuthorizedPermission(Permission.Camera) == false)
+        {
+            Permission.RequestUserPermission(Permission.Camera);
+        }
+#endif
+
         objScreen.SetActive(false);
 
         updateDevices();
@@ -75,8 +87,28 @@ public class WebCam : MonoBehaviour
         }
         else // 여러개라면, frontcam을 알아내서 적용
         {
+#if UNITY_ANDROID
             canUseDevices = true;
+
+            string frontCamName = "";
+
+            foreach (var camDevice in devices)
+            {
+                if (camDevice.isFrontFacing)
+                {
+                    frontCamName = camDevice.name;
+                    break;
+                }
+            }
+            _webCamTexture = new WebCamTexture(frontCamName);
+
+            objScreen.GetComponent<Renderer>().material.mainTexture = _webCamTexture;
+
+            objScreen.transform.localRotation = Quaternion.Euler(0f, 90f, -90f);
         }
+
+        logText.text = "camera count" + devices.Length;
+#endif
     }
 
     private IEnumerator coroutineOrientation()
