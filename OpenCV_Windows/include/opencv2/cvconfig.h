@@ -2,7 +2,7 @@
 #define OPENCV_CVCONFIG_H_INCLUDED
 
 /* OpenCV compiled as static or dynamic libs */
-/* #undef BUILD_SHARED_LIBS */
+#define BUILD_SHARED_LIBS
 
 /* OpenCV intrinsics optimized code */
 #define CV_ENABLE_INTRINSICS
@@ -47,11 +47,11 @@
 /* #undef HAVE_CUFFT */
 
 /* DirectX */
-/* #undef HAVE_DIRECTX */
-/* #undef HAVE_DIRECTX_NV12 */
-/* #undef HAVE_D3D11 */
-/* #undef HAVE_D3D10 */
-/* #undef HAVE_D3D9 */
+#define HAVE_DIRECTX
+#define HAVE_DIRECTX_NV12
+#define HAVE_D3D11
+#define HAVE_D3D10
+#define HAVE_D3D9
 
 /* Eigen Matrix & Linear Algebra Library */
 /* #undef HAVE_EIGEN */
@@ -81,6 +81,7 @@
 #define HAVE_IPP_IW_LL
 
 /* JPEG-2000 codec */
+/* #undef HAVE_OPENJPEG */
 #define HAVE_JASPER
 
 /* IJG JPEG codec */
@@ -99,12 +100,12 @@
 /* #undef HAVE_NVCUVENC */
 
 /* OpenCL Support */
-/* #undef HAVE_OPENCL */
+#define HAVE_OPENCL
 /* #undef HAVE_OPENCL_STATIC */
 /* #undef HAVE_OPENCL_SVM */
 
 /* NVIDIA OpenCL D3D Extensions support */
-/* #undef HAVE_OPENCL_D3D11_NV */
+#define HAVE_OPENCL_D3D11_NV
 
 /* OpenEXR codec */
 #define HAVE_OPENEXR
@@ -116,10 +117,10 @@
 #define HAVE_PNG
 
 /* Posix threads (pthreads) */
-#define HAVE_PTHREAD
+/* #undef HAVE_PTHREAD */
 
 /* parallel_for with pthreads */
-#define HAVE_PTHREADS_PF
+/* #undef HAVE_PTHREADS_PF */
 
 /* Qt support */
 /* #undef HAVE_QT */
@@ -128,7 +129,7 @@
 /* #undef HAVE_QT_OPENGL */
 
 /* Intel Threading Building Blocks */
-#define HAVE_TBB
+/* #undef HAVE_TBB */
 
 /* Ste||ar Group High Performance ParallelX */
 /* #undef HAVE_HPX */
@@ -137,7 +138,7 @@
 #define HAVE_TIFF
 
 /* Win32 UI */
-/* #undef HAVE_WIN32UI */
+#define HAVE_WIN32UI
 
 /* Define if your processor stores words with the most significant byte
    first (like Motorola and SPARC, unlike Intel and VAX). */
