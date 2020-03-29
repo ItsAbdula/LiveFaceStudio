@@ -14,10 +14,10 @@ public class NativeCodes : MonoBehaviour
 #endif
 
     [DllImport(dllName)]
-    public static extern void FlipImage(byte[] rawImage, int width, int height);
+    public static extern void FlipImage(ref byte rawImage, int width, int height);
 
     [DllImport(dllName)]
-    public static extern void DetectFace(byte[] rawImage, int width, int height);
+    public static extern void DetectFace(ref byte rawImage, int width, int height);
 
     [DllImport(dllName)]
     public static extern float Foopluginmethod();

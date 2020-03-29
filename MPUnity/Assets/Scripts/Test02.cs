@@ -28,7 +28,8 @@ public class Test02 : MonoBehaviour
 
     private Texture2D GetDetectedTexture()
     {
-        NativeCodes.DetectFace(ColorToByte(WebCam.image), WebCam.Width, WebCam.Height);
+        var bytes = ColorToByte(WebCam.image);
+        NativeCodes.DetectFace(ref bytes[0], WebCam.Width, WebCam.Height);
 
         Texture2D newTexture = new Texture2D(WebCam.Width, WebCam.Height, TextureFormat.RGB24, false, false);
         newTexture.SetPixels32(WebCam.image, 0);

@@ -26,7 +26,7 @@ public class Test01 : MonoBehaviour
         var inputData = inputTex.GetPixels32();
         var inputByte = ColorToByte(inputData);
 
-        NativeCodes.FlipImage(inputByte, inputTex.width, inputTex.height);
+        NativeCodes.FlipImage(ref inputByte[0], inputTex.width, inputTex.height);
         var resultPixels = ByteToColor(inputByte);
         inputTex.SetPixels32(resultPixels);
         inputTex.Apply();
@@ -39,7 +39,7 @@ public class Test01 : MonoBehaviour
 
         var inputByte = ColorToByte(inputData);
 
-        NativeCodes.DetectFace(inputByte, inputTex.width, inputTex.height);
+        NativeCodes.DetectFace(ref inputByte[0], inputTex.width, inputTex.height);
 
         var resultColors = ByteToColor(inputByte);
         resultColors = reorderColor32(resultColors);
