@@ -105,10 +105,9 @@ public class WebCam : MonoBehaviour
             objScreen.GetComponent<Renderer>().material.mainTexture = _webCamTexture;
 
             objScreen.transform.localRotation = Quaternion.Euler(0f, 90f, -90f);
-        }
-
-        logText.text = "camera count" + devices.Length;
 #endif
+            logText.text = "camera count" + devices.Length;
+        }
     }
 
     private IEnumerator coroutineOrientation()
