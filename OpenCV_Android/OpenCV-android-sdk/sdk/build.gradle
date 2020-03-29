@@ -90,15 +90,20 @@
 
 apply plugin: 'com.android.library'
 
-println "OpenCV: " + project.buildscript.sourceFile
+def openCVersionName = "4.3.0-pre"
+def openCVersionCode = ((4 * 100 + 3) * 100 + 0) * 10 + 0
+
+println "OpenCV: " +openCVersionName + " " + project.buildscript.sourceFile
 
 android {
     compileSdkVersion 26
-    //buildToolsVersion "x.y.z" // not needed since com.android.tools.build:gradle:3.0.0
 
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 26
+
+        versionCode openCVersionCode
+        versionName openCVersionName
 
         externalNativeBuild {
             cmake {

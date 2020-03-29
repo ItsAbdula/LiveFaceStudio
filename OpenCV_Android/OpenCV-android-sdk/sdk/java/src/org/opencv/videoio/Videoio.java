@@ -63,7 +63,8 @@ public class Videoio {
             CAP_PROP_CHANNEL = 43,
             CAP_PROP_AUTO_WB = 44,
             CAP_PROP_WB_TEMPERATURE = 45,
-            CAP_PROP_CODEC_PIXEL_FORMAT = 46;
+            CAP_PROP_CODEC_PIXEL_FORMAT = 46,
+            CAP_PROP_BITRATE = 47;
 
 
     // C++: enum <unnamed>
@@ -286,6 +287,7 @@ public class Videoio {
             CAP_PROP_XI_FFS_ACCESS_KEY = 583,
             CAP_PROP_XI_SENSOR_FEATURE_SELECTOR = 585,
             CAP_PROP_XI_SENSOR_FEATURE_VALUE = 586,
+            CAP_PROP_ARAVIS_AUTOTRIGGER = 600,
             CAP_PROP_IOS_DEVICE_FOCUS = 9001,
             CAP_PROP_IOS_DEVICE_EXPOSURE = 9002,
             CAP_PROP_IOS_DEVICE_FLASH = 9003,
