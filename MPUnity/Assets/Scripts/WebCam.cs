@@ -1,9 +1,12 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
 #if UNITY_ANDROID
+
 using UnityEngine.Android;
+
 #endif
+
 using UnityEngine.UI;
 
 public class WebCam : MonoBehaviour
@@ -38,7 +41,7 @@ public class WebCam : MonoBehaviour
     private void Awake()
     {
 #if UNITY_ANDROID
-        if(Permission.HasUserAuthorizedPermission(Permission.Camera) == false)
+        if (Permission.HasUserAuthorizedPermission(Permission.Camera) == false)
         {
             Permission.RequestUserPermission(Permission.Camera);
         }

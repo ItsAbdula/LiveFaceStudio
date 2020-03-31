@@ -6,10 +6,6 @@ public class Test02 : MonoBehaviour
     public RawImage detectedImage;
     private float timer = 0;
 
-    private void Start()
-    {
-    }
-
     private void Update()
     {
         timer += Time.deltaTime;
