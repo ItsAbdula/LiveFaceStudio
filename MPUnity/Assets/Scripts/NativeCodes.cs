@@ -1,8 +1,7 @@
-﻿using UnityEngine;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 using System;
 
-public class NativeCodes : MonoBehaviour
+public class NativeCodes
 {
     public static NativeCodes nativeCodes;
 

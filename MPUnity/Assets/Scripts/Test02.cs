@@ -1,6 +1,4 @@
-﻿using System;
-using System.Runtime.InteropServices;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class Test02 : MonoBehaviour
@@ -28,7 +26,7 @@ public class Test02 : MonoBehaviour
 
     private Texture2D GetDetectedTexture()
     {
-        var bytes = ColorToByte(WebCam.image);
+        var bytes = Utils.ColorToByte(WebCam.image);
 
         var cascadeXml = Resources.Load<TextAsset>("data/haarcascades/haarcascade_frontalface_alt");
         var nestedCascadeXml = Resources.Load<TextAsset>("data/haarcascades/haarcascade_eye_tree_eyeglasses");
@@ -50,40 +48,5 @@ public class Test02 : MonoBehaviour
         detectedImage.texture = newTexture;
 
         return newTexture;
-    }
-
-    private byte[] ColorToByte(Color32[] pixels)
-    {
-        if (pixels == null || pixels.Length == 0) return null;
-
-        int colorByteLength = Marshal.SizeOf(typeof(Color32));
-        int length = colorByteLength * pixels.Length;
-        byte[] bytes = new byte[length];
-
-        GCHandle handle = default(GCHandle);
-        try
-        {
-            handle = GCHandle.Alloc(pixels, GCHandleType.Pinned);
-            IntPtr ptr = handle.AddrOfPinnedObject();
-            Marshal.Copy(ptr, bytes, 0, length);
-        }
-        finally
-        {
-            if (handle != default(GCHandle))
-                handle.Free();
-        }
-
-        return bytes;
-    }
-
-    private Color32[] ByteToColor(byte[] pixels)
-    {
-        Color32[] temp = new Color32[pixels.Length / 4];
-        for (int i = 0; i < pixels.Length / 4; i++)
-        {
-            temp[i] = new Color32(pixels[i * 4], pixels[i * 4 + 1], pixels[i * 4 + 2], pixels[i * 4 + 3]);
-        }
-
-        return temp;
     }
 }

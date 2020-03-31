@@ -3,7 +3,7 @@ using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
-public class NativeLogger : MonoBehaviour
+public class NativeLogger
 {
     public static NativeLogger nativeLogger;
 
