@@ -41,7 +41,23 @@ public class Test01 : MonoBehaviour
 
         var inputByte = ColorToByte(inputData);
 
-        NativeCodes.DetectFace(ref inputByte[0], inputTex.width, inputTex.height);
+        var cascadeXml = Resources.Load<TextAsset>("data/haarcascades/haarcascade_frontalface_alt");
+        var nestedCascadeXml = Resources.Load<TextAsset>("data/haarcascades/haarcascade_eye_tree_eyeglasses");
+
+        if (cascadeXml == null)
+        {
+            Debug.Log("Can't load cascade");
+
+            return;
+        }
+        if (nestedCascadeXml == null)
+        {
+            Debug.Log("Can't load nestedcascade");
+
+            return;
+        }
+
+        NativeCodes.DetectFace(cascadeXml.text, nestedCascadeXml.text, ref inputByte[0], inputTex.width, inputTex.height);
 
         var resultColors = ByteToColor(inputByte);
         resultColors = reorderColor32(resultColors);

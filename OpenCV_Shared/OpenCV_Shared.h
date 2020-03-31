@@ -30,7 +30,8 @@ extern "C"
 {
     DLLEXPORT void STDCALL LinkLogger(void(STDCALL* logFunctPtr)(const char *));
 
-    DLLEXPORT void STDCALL FlipImage(string dataPath, unsigned char *rawImage, int width, int height);
-    DLLEXPORT void STDCALL DetectFace(unsigned char *rawImage, int width, int height);
+    DLLEXPORT void STDCALL FlipImage(unsigned char *rawImage, int width, int height);
+    DLLEXPORT void STDCALL DetectFace(const char *cascadeXml, const char *nestedcascadeXml, unsigned char *rawImage, int width, int height);
+
     DLLEXPORT float STDCALL Foopluginmethod();
 }

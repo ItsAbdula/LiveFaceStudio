@@ -15,7 +15,7 @@ extern "C"
     {
         if (Logger != NULL)
         {
-            Logger("FlipImage");
+            Logger("Call FlipImage");
         }
 
         void* byteToVoid = static_cast<void*>(rawImage);
@@ -25,17 +25,23 @@ extern "C"
         cv::flip(image, image, -1);
     }
 
-    DLLEXPORT void STDCALL DetectFace(unsigned char *rawImage, int width, int height)
+    DLLEXPORT void STDCALL DetectFace(const char *cascadeXml, const char *nestedcascadeXml, unsigned char *rawImage, int width, int height)
     {
+        if (Logger != NULL)
+        {
+            Logger("Call DetectFaceWithXml");
+        }
+
         void* byteToVoid = static_cast<void*>(rawImage);
 
         Mat image(height, width, CV_8UC4, byteToVoid);
 
-        string cascadeName, nestedCascadeName;
-        CascadeClassifier cascade, nestedCascade;
+        FileStorage fs1(cascadeXml, FileStorage::READ | FileStorage::MEMORY);
+        FileStorage fs2(nestedcascadeXml, FileStorage::READ | FileStorage::MEMORY);
 
-        if (nestedCascade.load("haarcascade_eye_tree_eyeglasses.xml") == false) return;
-        if (cascade.load("haarcascade_frontalface_alt.xml") == false) return;
+        CascadeClassifier cascade, nestedCascade;
+        cascade.read(fs1.getFirstTopLevelNode());
+        nestedCascade.read(fs2.getFirstTopLevelNode());
 
         double t = 0;
         vector<Rect> faces, faces2;

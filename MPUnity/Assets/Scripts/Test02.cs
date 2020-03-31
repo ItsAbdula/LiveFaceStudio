@@ -29,7 +29,20 @@ public class Test02 : MonoBehaviour
     private Texture2D GetDetectedTexture()
     {
         var bytes = ColorToByte(WebCam.image);
-        NativeCodes.DetectFace(ref bytes[0], WebCam.Width, WebCam.Height);
+
+        var cascadeXml = Resources.Load<TextAsset>("data/haarcascades/haarcascade_frontalface_alt");
+        var nestedCascadeXml = Resources.Load<TextAsset>("data/haarcascades/haarcascade_eye_tree_eyeglasses");
+
+        if (cascadeXml == null)
+        {
+            Debug.Log("Can't load cascade");
+        }
+        if (nestedCascadeXml == null)
+        {
+            Debug.Log("Can't load nestedcascade");
+        }
+
+        NativeCodes.DetectFace(cascadeXml.text, nestedCascadeXml.text, ref bytes[0], WebCam.Width, WebCam.Height);
 
         Texture2D newTexture = new Texture2D(WebCam.Width, WebCam.Height, TextureFormat.RGB24, false, false);
         newTexture.SetPixels32(WebCam.image, 0);

@@ -18,10 +18,10 @@ public class NativeCodes : MonoBehaviour
     public static extern void FlipImage(ref byte rawImage, int width, int height);
 
     [DllImport(dllName)]
-    public static extern void DetectFace(ref byte rawImage, int width, int height);
+    public static extern void DetectFace([MarshalAs(UnmanagedType.LPStr)] string cascadeXml, [MarshalAs(UnmanagedType.LPStr)] string nestedcascadeXml, ref byte rawImage, int width, int height);
 
     [DllImport(dllName)]
-    public static extern void LinkLogger([MarshalAs(UnmanagedType.FunctionPtr)]IntPtr intPtr);
+    public static extern void LinkLogger([MarshalAs(UnmanagedType.FunctionPtr)] IntPtr intPtr);
 
     [DllImport(dllName)]
     public static extern float Foopluginmethod();
