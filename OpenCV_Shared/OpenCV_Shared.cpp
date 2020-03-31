@@ -2,8 +2,22 @@
 
 extern "C"
 {
+    void (STDCALL *Logger) (const char*) = NULL;
+
+    DLLEXPORT void STDCALL LinkLogger(void(STDCALL *logFunctPtr)(const char *))
+    {
+        Logger = logFunctPtr;
+
+        Logger("Logger Link Successful!");
+    }
+
     DLLEXPORT void STDCALL FlipImage(unsigned char *rawImage, int width, int height)
     {
+        if (Logger != NULL)
+        {
+            Logger("FlipImage");
+        }
+
         void* byteToVoid = static_cast<void*>(rawImage);
 
         cv::Mat image(height, width, CV_8UC4, byteToVoid);

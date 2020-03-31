@@ -1,5 +1,5 @@
 #pragma once
-#include <opencv2/opencv.hpp>
+#include "opencv2/opencv.hpp"
 #include "opencv2/core.hpp"
 #include "opencv2/objdetect.hpp"
 #include "opencv2/highgui.hpp"
@@ -28,7 +28,9 @@ struct Color32
 
 extern "C"
 {
+    DLLEXPORT void STDCALL LinkLogger(void(STDCALL* logFunctPtr)(const char *));
+
+    DLLEXPORT void STDCALL FlipImage(string dataPath, unsigned char *rawImage, int width, int height);
     DLLEXPORT void STDCALL DetectFace(unsigned char *rawImage, int width, int height);
-    DLLEXPORT void STDCALL FlipImage(unsigned char *rawImage, int width, int height);
     DLLEXPORT float STDCALL Foopluginmethod();
 }

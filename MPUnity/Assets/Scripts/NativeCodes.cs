@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Runtime.InteropServices;
+using System;
 
 public class NativeCodes : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class NativeCodes : MonoBehaviour
 
     [DllImport(dllName)]
     public static extern void DetectFace(ref byte rawImage, int width, int height);
+
+    [DllImport(dllName)]
+    public static extern void LinkLogger([MarshalAs(UnmanagedType.FunctionPtr)]IntPtr intPtr);
 
     [DllImport(dllName)]
     public static extern float Foopluginmethod();

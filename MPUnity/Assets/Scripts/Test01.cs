@@ -19,6 +19,8 @@ public class Test01 : MonoBehaviour
 
         inputTex = inputImg.sprite.texture;
         resultTex = resultImg.sprite.texture;
+
+        NativeLogger.SetUpLogger();
     }
 
     private void CallFlipImage()
