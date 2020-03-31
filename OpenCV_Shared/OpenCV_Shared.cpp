@@ -2,16 +2,16 @@
 
 extern "C"
 {
-    void (STDCALL *Logger) (const char*) = NULL;
+    void (CALLCONV *Logger) (const char*) = NULL;
 
-    DLLEXPORT void STDCALL LinkLogger(void(STDCALL *logFunctPtr)(const char *))
+    DLLEXPORT void CALLCONV LinkLogger(void(CALLCONV *logFunctPtr)(const char *))
     {
         Logger = logFunctPtr;
 
         Logger("Logger Link Successful!");
     }
 
-    DLLEXPORT void STDCALL FlipImage(unsigned char *rawImage, int width, int height)
+    DLLEXPORT void CALLCONV FlipImage(unsigned char *rawImage, int width, int height)
     {
         if (Logger != NULL)
         {
@@ -25,7 +25,7 @@ extern "C"
         cv::flip(image, image, -1);
     }
 
-    DLLEXPORT void STDCALL DetectFace(const char *cascadeXml, const char *nestedcascadeXml, unsigned char *rawImage, int width, int height)
+    DLLEXPORT void CALLCONV DetectFace(const char *cascadeXml, const char *nestedcascadeXml, unsigned char *rawImage, int width, int height)
     {
         if (Logger != NULL)
         {
@@ -112,7 +112,7 @@ extern "C"
         }
     }
 
-    DLLEXPORT float STDCALL Foopluginmethod()
+    DLLEXPORT float CALLCONV Foopluginmethod()
     {
         cv::Mat img(20, 20, CV_8UC1); // use some OpenCV objects
         return img.rows * 1.0f;     // should return 10.0f

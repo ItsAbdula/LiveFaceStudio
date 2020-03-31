@@ -12,10 +12,10 @@ using namespace cv;
 
 #if _WINDLL
 #define DLLEXPORT __declspec(dllexport)
-#define STDCALL __stdcall
+#define CALLCONV __stdcall
 #else
 #define DLLEXPORT
-#define STDCALL
+#define CALLCONV
 #endif
 
 struct Color32
@@ -28,10 +28,10 @@ struct Color32
 
 extern "C"
 {
-    DLLEXPORT void STDCALL LinkLogger(void(STDCALL* logFunctPtr)(const char *));
+    DLLEXPORT void CALLCONV LinkLogger(void(CALLCONV* logFunctPtr)(const char *));
 
-    DLLEXPORT void STDCALL FlipImage(unsigned char *rawImage, int width, int height);
-    DLLEXPORT void STDCALL DetectFace(const char *cascadeXml, const char *nestedcascadeXml, unsigned char *rawImage, int width, int height);
+    DLLEXPORT void CALLCONV FlipImage(unsigned char *rawImage, int width, int height);
+    DLLEXPORT void CALLCONV DetectFace(const char *cascadeXml, const char *nestedcascadeXml, unsigned char *rawImage, int width, int height);
 
-    DLLEXPORT float STDCALL Foopluginmethod();
+    DLLEXPORT float CALLCONV Foopluginmethod();
 }
