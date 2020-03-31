@@ -11,8 +11,7 @@ using namespace cv;
 using namespace face;
 
 void detectAndDraw(Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, double scale);
-
-void detectFaceLandmark(string fileName, string image, string cascade_name);
+void detectFaceLandmark(string fileName, string imagePath, string cascade_name);
 
 int main(int argc, const char** argv)
 {
@@ -38,27 +37,27 @@ int main(int argc, const char** argv)
     return 0;
 }
 
-void detectFaceLandmark(string modelDataName, string image, string cascade_name)
+void detectFaceLandmark(string modelDataName, string imagePath, string cascadeName)
 {
     CascadeClassifier face_cascade;
 
-    face_cascade.load(cascade_name);
-    Mat img = imread(image);
+    face_cascade.load(cascadeName);
+    Mat image = imread(imagePath);
     Ptr<Facemark> facemark = createFacemarkKazemi();
     facemark->loadModel(modelDataName);
 
     //
 
     vector<Rect> faces;
-    resize(img, img, Size(460, 460), 0, 0, INTER_LINEAR_EXACT);
+    resize(image, image, Size(460, 460), 0, 0, INTER_LINEAR_EXACT);
     Mat gray;
-    if (img.channels() == 1)
+    if (image.channels() == 1)
     {
-        gray = img.clone();
+        gray = image.clone();
     }
     else
     {
-        cvtColor(img, gray, COLOR_BGR2GRAY);
+        cvtColor(image, gray, COLOR_BGR2GRAY);
     }
     equalizeHist(gray, gray);
     face_cascade.detectMultiScale(gray, faces, 1.1, 3, 0, Size(30, 30));
@@ -66,22 +65,22 @@ void detectFaceLandmark(string modelDataName, string image, string cascade_name)
     //
 
     vector< vector<Point2f> > shapes;
-    if (facemark->fit(img, faces, shapes))
+    if (facemark->fit(image, faces, shapes))
     {
         for (size_t i = 0; i < faces.size(); i++)
         {
-            cv::rectangle(img, faces[i], Scalar(255, 0, 0));
+            cv::rectangle(image, faces[i], Scalar(255, 0, 0));
         }
         for (unsigned long i = 0; i < faces.size(); i++)
         {
             for (unsigned long k = 0; k < shapes[i].size(); k++)
             {
-                cv::circle(img, shapes[i][k], 5, cv::Scalar(0, 0, 255), FILLED);
+                cv::circle(image, shapes[i][k], 5, cv::Scalar(0, 0, 255), FILLED);
             }
         }
 
         namedWindow("Detected_shape");
-        imshow("Detected_shape", img);
+        imshow("Detected_shape", image);
 
         waitKey(0);
     }
