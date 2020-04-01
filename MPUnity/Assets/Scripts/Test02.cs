@@ -36,7 +36,7 @@ public class Test02 : MonoBehaviour
             Debug.Log("Can't load nestedcascade");
         }
 
-        NativeCodes.DetectFace(cascadeXml.text, nestedCascadeXml.text, ref bytes[0], WebCam.Width, WebCam.Height);
+        //NativeCodes.DetectFace(cascadeXml.text, nestedCascadeXml.text, ref bytes[0], WebCam.Width, WebCam.Height);
 
         Texture2D newTexture = new Texture2D(WebCam.Width, WebCam.Height, TextureFormat.RGB24, false, false);
         newTexture.SetPixels32(WebCam.image, 0);

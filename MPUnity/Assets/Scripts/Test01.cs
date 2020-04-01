@@ -7,8 +7,14 @@ public class Test01 : MonoBehaviour
     public Button btnDetect;
     public Image inputImg;
     public Image resultImg;
+    public Transform faceSphere;
+    public Transform canvas;
+
     private Texture2D inputTex;
     private Texture2D resultTex;
+
+    private int maxFaceDetectCount = 5;
+    private CvCircle[] faces;
 
     private void Start()
     {
@@ -19,6 +25,9 @@ public class Test01 : MonoBehaviour
         resultTex = resultImg.sprite.texture;
 
         NativeLogger.SetUpLogger();
+        faces = new CvCircle[maxFaceDetectCount];
+
+        faceSphere.position = inputImg.transform.position;
     }
 
     private void CallFlipImage()
@@ -55,7 +64,16 @@ public class Test01 : MonoBehaviour
             return;
         }
 
-        NativeCodes.DetectFace(cascadeXml.text, nestedCascadeXml.text, ref inputByte[0], inputTex.width, inputTex.height);
+        NativeCodes.DetectFace(ref faces[0], cascadeXml.text, nestedCascadeXml.text, ref inputByte[0], inputTex.width, inputTex.height);
+
+        var scaleFactor = new Vector2(resultImg.transform.localScale.x * canvas.localScale.x, resultImg.transform.localScale.x * canvas.transform.localScale.y);
+        var leftTop = new Vector3(resultImg.transform.position.x + resultImg.rectTransform.rect.xMin * scaleFactor.x, resultImg.transform.position.y + resultImg.rectTransform.rect.yMax * scaleFactor.y, 0.0f);
+        faceSphere.position = leftTop;
+        if (faces[0].Radius != 0)
+        {
+            faceSphere.Translate(((float)faces[0].X / resultTex.width) * resultImg.rectTransform.rect.width * scaleFactor.x, -((float)faces[0].Y / resultTex.height) * resultImg.rectTransform.rect.height * scaleFactor.y, 0.0f);
+            faceSphere.localScale = new Vector3(((float)faces[0].Radius / resultTex.width) * resultImg.rectTransform.rect.width * scaleFactor.x * 2, ((float)faces[0].Radius / resultTex.height) * resultImg.rectTransform.rect.height * scaleFactor.y * 2, 1.0f);
+        }
 
         var resultColors = Utils.ByteToColor(inputByte);
         resultColors = Utils.reorderColor32(resultColors, inputTex.width, inputTex.height);
