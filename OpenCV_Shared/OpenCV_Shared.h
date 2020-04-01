@@ -26,12 +26,18 @@ struct Color32
     uchar alpha;
 };
 
+struct Circle
+{
+    Circle(int x, int y, int radius) : X(x), Y(y), Radius(radius) {}
+    int X, Y, Radius;
+};
+
 extern "C"
 {
     DLLEXPORT void CALLCONV LinkLogger(void(CALLCONV* logFunctPtr)(const char *));
 
     DLLEXPORT void CALLCONV FlipImage(unsigned char *rawImage, int width, int height);
-    DLLEXPORT void CALLCONV DetectFace(const char *cascadeXml, const char *nestedcascadeXml, unsigned char *rawImage, int width, int height);
+    DLLEXPORT void CALLCONV DetectFace(Circle *faces, const char *cascadeXml, const char *nestedcascadeXml, unsigned char *rawImage, int width, int height);
 
     DLLEXPORT float CALLCONV Foopluginmethod();
 }

@@ -25,11 +25,11 @@ extern "C"
         cv::flip(image, image, -1);
     }
 
-    DLLEXPORT void CALLCONV DetectFace(const char *cascadeXml, const char *nestedcascadeXml, unsigned char *rawImage, int width, int height)
+    DLLEXPORT void CALLCONV DetectFace(Circle *faces, const char *cascadeXml, const char *nestedcascadeXml, unsigned char *rawImage, int width, int height)
     {
         if (Logger != NULL)
         {
-            Logger("Call DetectFaceWithXml");
+            Logger("Call DetectFace");
         }
 
         void* byteToVoid = static_cast<void*>(rawImage);
@@ -44,7 +44,7 @@ extern "C"
         nestedCascade.read(fs2.getFirstTopLevelNode());
 
         double t = 0;
-        vector<Rect> faces, faces2;
+        vector<Rect> detectedFaces;
         const static Scalar colors[] =
         {
                 Scalar(255,0,0),
@@ -62,7 +62,7 @@ extern "C"
         equalizeHist(smallImg, smallImg);
 
         t = (double)getTickCount();
-        cascade.detectMultiScale(smallImg, faces,
+        cascade.detectMultiScale(smallImg, detectedFaces,
             1.1, 2, 0
             //|CASCADE_FIND_BIGGEST_OBJECT
             //|CASCADE_DO_ROUGH_SEARCH
@@ -70,9 +70,9 @@ extern "C"
             Size(30, 30));
         t = (double)getTickCount() - t;
 
-        for (size_t i = 0; i < faces.size(); i++)
+        for (size_t i = 0; i < detectedFaces.size(); i++)
         {
-            Rect r = faces[i];
+            Rect r = detectedFaces[i];
             Mat smallImgROI;
             vector<Rect> nestedObjects;
             Point center;
@@ -84,22 +84,24 @@ extern "C"
                 center.x = cvRound((r.x + r.width * 0.5));
                 center.y = cvRound((r.y + r.height * 0.5));
                 radius = cvRound((r.width + r.height) * 0.25);
+
                 circle(image, center, radius, color, 3, 8, 0);
+
+                {
+                    faces[i].X = center.x;
+                    faces[i].Y = center.y;
+                    faces[i].Radius = radius;
+                }
             }
             else
-                rectangle(image, Point(cvRound(r.x), cvRound(r.y)),
-                    Point(cvRound((r.x + r.width - 1)), cvRound((r.y + r.height - 1))),
-                    color, 3, 8, 0);
-            if (nestedCascade.empty())
-                continue;
+            {
+                rectangle(image, Point(cvRound(r.x), cvRound(r.y)), Point(cvRound((r.x + r.width - 1)), cvRound((r.y + r.height - 1))), color, 3, 8, 0);
+            }
+
+            if (nestedCascade.empty()) continue;
+
             smallImgROI = smallImg(r);
-            nestedCascade.detectMultiScale(smallImgROI, nestedObjects,
-                1.1, 2, 0
-                //|CASCADE_FIND_BIGGEST_OBJECT
-                //|CASCADE_DO_ROUGH_SEARCH
-                //|CASCADE_DO_CANNY_PRUNING
-                | CASCADE_SCALE_IMAGE,
-                Size(30, 30));
+            nestedCascade.detectMultiScale(smallImgROI, nestedObjects, 1.1, 2, CASCADE_SCALE_IMAGE, Size(30, 30));
 
             for (auto const &nr : nestedObjects)
             {

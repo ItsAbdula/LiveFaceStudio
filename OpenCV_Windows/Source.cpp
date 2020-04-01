@@ -32,7 +32,7 @@ int main(int argc, const char** argv)
         waitKey(0);
     }
 
-    detectFaceLandmark("data/face/face_landmark_model.dat", "george.jpg", "data/haarcascades/haarcascade_frontalface_alt.xml");
+    detectFaceLandmark("data/face/face_landmark_model.bytes", "george.jpg", "data/haarcascades/haarcascade_frontalface_alt.xml");
 
     return 0;
 }

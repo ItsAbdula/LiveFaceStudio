@@ -1,6 +1,12 @@
 ﻿using System.Runtime.InteropServices;
 using System;
 
+[StructLayout(LayoutKind.Sequential, Size = 12)]
+public struct CvCircle
+{
+    public int X, Y, Radius;
+}
+
 public class NativeCodes
 {
     public static NativeCodes nativeCodes;
@@ -17,7 +23,7 @@ public class NativeCodes
     public static extern void FlipImage(ref byte rawImage, int width, int height);
 
     [DllImport(dllName)]
-    public static extern void DetectFace([MarshalAs(UnmanagedType.LPStr)] string cascadeXml, [MarshalAs(UnmanagedType.LPStr)] string nestedcascadeXml, ref byte rawImage, int width, int height);
+    public static extern void DetectFace(ref CvCircle faces, [MarshalAs(UnmanagedType.LPStr)] string cascadeXml, [MarshalAs(UnmanagedType.LPStr)] string nestedcascadeXml, ref byte rawImage, int width, int height);
 
     [DllImport(dllName)]
     public static extern void LinkLogger([MarshalAs(UnmanagedType.FunctionPtr)] IntPtr intPtr);
