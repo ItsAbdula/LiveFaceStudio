@@ -88,7 +88,7 @@ public class WebCam : MonoBehaviour
 
             objScreen.GetComponent<Renderer>().material.mainTexture = _webCamTexture;
         }
-        else // 여러개라면, frontcam을 알아내서 적용
+        else
         {
 #if UNITY_ANDROID
             canUseDevices = true;
