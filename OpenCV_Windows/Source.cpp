@@ -1,96 +1,133 @@
-#include "opencv2/objdetect.hpp"
-#include "opencv2/highgui.hpp"
-#include "opencv2/imgproc.hpp"
-#include "opencv2/videoio.hpp"
-#include "opencv2/face/facemark.hpp"
+#include <dlib/image_processing/frontal_face_detector.h>
+#include <dlib/image_processing/render_face_detections.h>
+#include <dlib/image_processing.h>
+#include <dlib/opencv.h>
+#include <dlib/gui_widgets.h>
+#include <dlib/image_io.h>
+
+#include <opencv2/core.hpp>
+#include <opencv2/core/types_c.h>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/face/facemark.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/videoio.hpp>
+#include <opencv2/objdetect.hpp>
 
 #include <iostream>
 
+#define WIDTH 640
+#define HEIGHT 480
+
 using namespace std;
 using namespace cv;
-using namespace face;
+using namespace dlib;
+
+image_window win, win_faces;
 
 void detectAndDraw(Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, double scale);
-void detectFaceLandmark(string fileName, string imagePath, string cascade_name);
 
-int main(int argc, const char** argv)
+std::vector<full_object_detection> detectFaceLandmark(frontal_face_detector &detector, shape_predictor &sp, array2d<bgr_pixel> &img);
+void drawFaceLandmarkOverlay(array2d<bgr_pixel> &dlibImage, std::vector<full_object_detection> &shapes);
+void drawFaceOnlyWindow(array2d<bgr_pixel> &dlibImage, std::vector<full_object_detection> &shapes);
+
+int main()
 {
-    Mat image;
-    string inputName = "test.jpg";
-    bool tryflip = false;
-    CascadeClassifier cascade, nestedCascade;
-    cascade.load("data/haarcascades/haarcascade_frontalface_alt.xml");
-    nestedCascade.load("data/haarcascades/haarcascade_eye_tree_eyeglasses.xml");
+    VideoCapture vcap;
+    Mat src;
+    Mat dst;
 
-    image = imread(samples::findFileOrKeep(inputName), IMREAD_COLOR);
+#if IP_CAMERA
+    const std::string videoStreamAddress = "http://192.168.47.5:25328/video";
 
-    if (image.empty() == false)
+    if (vcap.open(videoStreamAddress) == false)
     {
-        if (tryflip) flip(image, image, 1);
+        std::cout << "Error opening video stream or file" << std::endl;
+        return -1;
+    }
+#endif
 
-        detectAndDraw(image, cascade, nestedCascade, 1.0);
-        waitKey(0);
+    // TODO: 웹캠에서 동작 확인
+    // set Camera's Resolution
+    {
+        vcap.set(CAP_PROP_FRAME_WIDTH, WIDTH);
+        vcap.set(CAP_PROP_FRAME_HEIGHT, HEIGHT);
     }
 
-    detectFaceLandmark("data/face/face_landmark_model.bytes", "george.jpg", "data/haarcascades/haarcascade_frontalface_alt.xml");
+    frontal_face_detector detector = get_frontal_face_detector();
+    shape_predictor sp;
+    deserialize("shape_predictor_68_face_landmarks.dat") >> sp;
 
-    return 0;
+    array2d<bgr_pixel> dlibImage;
+    cv_image<bgr_pixel> cvMat2dlib;
+
+    // Camera
+    while (true)
+    {
+        if (waitKey(1) >= 0) break;
+
+        if (vcap.read(src) == false)
+        {
+            std::cout << "No frame" << std::endl;
+            waitKey();
+        }
+
+        // Set Input Image's Resolution
+        {
+            resize(src, dst, Size(WIDTH, HEIGHT));
+
+            cvMat2dlib = cv_image<bgr_pixel>(dst);
+            assign_image(dlibImage, cv_image<bgr_pixel>(dst));
+        }
+
+        auto shapes = detectFaceLandmark(detector, sp, dlibImage);
+
+        drawFaceLandmarkOverlay(dlibImage, shapes);
+        drawFaceOnlyWindow(dlibImage, shapes);
+    }
 }
 
-void detectFaceLandmark(string modelDataName, string imagePath, string cascadeName)
+std::vector<full_object_detection> detectFaceLandmark(frontal_face_detector &detector, shape_predictor &sp, array2d<bgr_pixel> &img)
 {
-    CascadeClassifier face_cascade;
+    pyramid_up(img);
 
-    face_cascade.load(cascadeName);
-    Mat image = imread(imagePath);
-    Ptr<Facemark> facemark = createFacemarkKazemi();
-    facemark->loadModel(modelDataName);
+    std::vector<dlib::rectangle> dets = detector(img);
+    cout << "Number of faces detected : " << dets.size() << endl;
 
-    //
-
-    vector<Rect> faces;
-    resize(image, image, Size(460, 460), 0, 0, INTER_LINEAR_EXACT);
-    Mat gray;
-    if (image.channels() == 1)
+    std::vector<full_object_detection> shapes;
+    for (unsigned long i = 0; i < dets.size(); i++)
     {
-        gray = image.clone();
+        full_object_detection shape = sp(img, dets[i]);
+        //cout << "Number of parts: " << shape.num_parts() << endl;
+        //for (unsigned long j = 0; j < shape.num_parts(); j++)
+        //{
+        //    cout << "pixel position of " + to_string(j) + " part : " << shape.part(j) << endl;
+        //}
+
+        shapes.push_back(shape);
     }
-    else
-    {
-        cvtColor(image, gray, COLOR_BGR2GRAY);
-    }
-    equalizeHist(gray, gray);
-    face_cascade.detectMultiScale(gray, faces, 1.1, 3, 0, Size(30, 30));
 
-    //
+    return shapes;
+}
 
-    vector< vector<Point2f> > shapes;
-    if (facemark->fit(image, faces, shapes))
-    {
-        for (size_t i = 0; i < faces.size(); i++)
-        {
-            cv::rectangle(image, faces[i], Scalar(255, 0, 0));
-        }
-        for (unsigned long i = 0; i < faces.size(); i++)
-        {
-            for (unsigned long k = 0; k < shapes[i].size(); k++)
-            {
-                cv::circle(image, shapes[i][k], 5, cv::Scalar(0, 0, 255), FILLED);
-            }
-        }
+void drawFaceLandmarkOverlay(array2d<bgr_pixel> &dlibImage, std::vector<full_object_detection> &shapes)
+{
+    win.clear_overlay();
+    win.set_image(dlibImage);
+    win.add_overlay(render_face_detections(shapes));
+}
 
-        namedWindow("Detected_shape");
-        imshow("Detected_shape", image);
-
-        waitKey(0);
-    }
+void drawFaceOnlyWindow(array2d<bgr_pixel> &dlibImage, std::vector<full_object_detection> &shapes)
+{
+    dlib::array<array2d<rgb_pixel> > face_chips;
+    extract_image_chips(dlibImage, get_face_chip_details(shapes), face_chips);
+    win_faces.set_image(tile_images(face_chips));
 }
 
 void detectAndDraw(Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, double scale)
 {
     const auto Color = Scalar(255, 0, 0);
 
-    vector<Rect> faces;
+    std::vector<Rect> faces;
 
     Mat gray;
     cvtColor(img, gray, COLOR_BGR2GRAY);
@@ -105,7 +142,7 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, CascadeClassifier& nest
     for (const auto &face : faces)
     {
         Mat smallImgROI;
-        vector<Rect> nestedObjects;
+        std::vector<Rect> nestedObjects;
         Point center;
 
         int radius;
@@ -121,7 +158,7 @@ void detectAndDraw(Mat& img, CascadeClassifier& cascade, CascadeClassifier& nest
         }
         else
         {
-            rectangle(img, Point(cvRound(face.x*scale), cvRound(face.y*scale)),
+            cv::rectangle(img, Point(cvRound(face.x*scale), cvRound(face.y*scale)),
                 Point(cvRound((face.x + face.width - 1)*scale), cvRound((face.y + face.height - 1)*scale)),
                 Color, 3, 8, 0);
         }
