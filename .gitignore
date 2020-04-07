@@ -14,6 +14,7 @@
 /OpenCV_Android/ARM/
 /x64/
 /OpenCV_Windows/x64/
+/OpenCV_Windows/Release/
 
 # Asset meta data should only be ignored when the corresponding asset is also ignored
 !/MPUnity/[Aa]ssets/**/*.meta
