@@ -1,0 +1,15 @@
+OpenCVPlusUnity
+OpenCVPlusUnity 남현이 노트북에서 안되고있음 내꺼에선됨
+OpenCVPlusUnity 안드로이드 빌드
+
+dlib
+dlib 얼굴 front벡터 그리기 추가
+dlib unity test
+detectFaceLandmark()속도 개선
+
+live2d
+부분 이미지 런타임에 바꾸기(눈, 눈쑵 먼저)
+다른 샘플 live2d 모델에 테스트
+
+경택 cubism parameters inspector
+
