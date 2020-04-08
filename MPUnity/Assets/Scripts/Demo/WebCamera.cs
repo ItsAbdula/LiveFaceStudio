@@ -169,7 +169,7 @@ namespace OpenCvSharp.Demo
 				Surface.GetComponent<RawImage>().texture = renderedTexture;
 
 				// Adjust image ration according to the texture sizes 
-				Surface.GetComponent<RectTransform>().sizeDelta = new Vector2(renderedTexture.width, renderedTexture.height);
+				//Surface.GetComponent<RectTransform>().sizeDelta = new Vector2(renderedTexture.width, renderedTexture.height);
 			}
 		}
 	}
