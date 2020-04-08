@@ -60,10 +60,18 @@ int main()
     array2d<bgr_pixel> dlibImage;
     cv_image<bgr_pixel> cvMat2dlib;
 
+    int counter = 0;
+    const int divisor = 5;
+
     // Camera
     while (true)
     {
         if (waitKey(1) >= 0) break;
+
+        counter += 1;
+        if (counter % divisor != 0) continue;
+
+        counter = 0;
 
         if (vcap.read(src) == false)
         {
