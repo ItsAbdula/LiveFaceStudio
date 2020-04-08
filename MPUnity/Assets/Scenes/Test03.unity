@@ -263,7 +263,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Surface: {fileID: 639413524}
   faces: {fileID: 4900000, guid: 38ddd2ea1e52ef64d92e3588875523d0, type: 3}
-  eyes: {fileID: 4900000, guid: 2bfe0a8ab8977d141b1b4cbdb0685240, type: 3}
+  eyes: {fileID: 4900000, guid: d51676db5f47a3b498b94a7163c502c8, type: 3}
   shapes: {fileID: 4900000, guid: 4f38cb82325a8cf46bf68292b38a92df, type: 3}
 --- !u!114 &639413527
 MonoBehaviour:
