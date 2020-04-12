@@ -110,8 +110,24 @@ namespace OpenCvSharp.Demo
 		/// </summary>
 		protected virtual void Awake()
 		{
-			if (WebCamTexture.devices.Length > 0)
-				DeviceName = WebCamTexture.devices[WebCamTexture.devices.Length - 1].name;
+			if (WebCamTexture.devices.Length == 1)
+            {
+                DeviceName = WebCamTexture.devices[WebCamTexture.devices.Length - 1].name;
+            }
+            else if(WebCamTexture.devices.Length>1)
+            {
+                string frontCamName = "";
+
+                foreach (var camDevice in WebCamTexture.devices)
+                {
+                    if (camDevice.isFrontFacing)
+                    {
+                        frontCamName = camDevice.name;
+                        break;
+                    }
+                }
+                DeviceName = frontCamName;
+            }
 		}
 
 		void OnDestroy() 
