@@ -1,0 +1,10 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "unitychan.moc3",
+		"Textures": [
+			"unitychan.2048/texture_00.png"
+		],
+		"DisplayInfo": "unitychan.cdi3.json"
+	}
+}

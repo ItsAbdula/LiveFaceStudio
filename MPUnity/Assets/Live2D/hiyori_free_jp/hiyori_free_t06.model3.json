@@ -1,0 +1,23 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "hiyori_free_t06.moc3",
+		"Textures": [
+			"hiyori_free_t06.2048/texture_00.png"
+		],
+		"Physics": "hiyori_free_t06.physics3.json",
+		"DisplayInfo": "hiyori_free_t06.cdi3.json"
+	},
+	"Groups": [
+		{
+			"Target": "Parameter",
+			"Name": "LipSync",
+			"Ids": []
+		},
+		{
+			"Target": "Parameter",
+			"Name": "EyeBlink",
+			"Ids": []
+		}
+	]
+}

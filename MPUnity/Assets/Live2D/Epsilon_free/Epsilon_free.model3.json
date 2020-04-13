@@ -1,0 +1,10 @@
+{
+	"Version": 3,
+	"FileReferences": {
+		"Moc": "Epsilon_free.moc3",
+		"Textures": [
+			"Epsilon_free.2048/texture_00.png"
+		],
+		"DisplayInfo": "Epsilon_free.cdi3.json"
+	}
+}
