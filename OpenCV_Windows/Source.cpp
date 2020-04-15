@@ -4,7 +4,9 @@
 #include <dlib/opencv.h>
 #include <dlib/gui_widgets.h>
 #include <dlib/image_io.h>
+#include <dlib/opencv.h>
 
+#include <opencv2/opencv.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/core/types_c.h>
 #include <opencv2/imgproc.hpp>
@@ -15,20 +17,14 @@
 
 #include <iostream>
 
-#define WIDTH 640
-#define HEIGHT 480
+#define FACE_DOWNSAMPLE_RATIO 4
 
 using namespace std;
 using namespace cv;
 using namespace dlib;
 
-image_window win, win_faces;
-
-void detectAndDraw(Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, double scale);
-
-std::vector<full_object_detection> detectFaceLandmark(frontal_face_detector &detector, shape_predictor &sp, array2d<bgr_pixel> &img);
-void drawFaceLandmarkOverlay(array2d<bgr_pixel> &dlibImage, std::vector<full_object_detection> &shapes);
-void drawFaceOnlyWindow(array2d<bgr_pixel> &dlibImage, std::vector<full_object_detection> &shapes);
+void drawPolyline(Mat &img, const dlib::full_object_detection& d, const int start, const int end, bool isclosed);
+void drawFace(Mat &img, const dlib::full_object_detection& d);
 
 int main()
 {
@@ -46,142 +42,77 @@ int main()
     }
 #endif
 
-    // TODO: 웹캠에서 동작 확인
-    // set Camera's Resolution
-    {
-        vcap.set(CAP_PROP_FRAME_WIDTH, WIDTH);
-        vcap.set(CAP_PROP_FRAME_HEIGHT, HEIGHT);
-    }
-
     frontal_face_detector detector = get_frontal_face_detector();
-    shape_predictor sp;
-    deserialize("shape_predictor_68_face_landmarks.dat") >> sp;
+    shape_predictor shapePredictor;
+    deserialize("shape_predictor_68_face_landmarks.dat") >> shapePredictor;
 
     array2d<bgr_pixel> dlibImage;
     cv_image<bgr_pixel> cvMat2dlib;
 
+    vcap >> src;
+    Mat imgResized, imgDisplay;
+    resize(src, imgResized, Size(), 1.0 / FACE_DOWNSAMPLE_RATIO, 1.0 / FACE_DOWNSAMPLE_RATIO);
+    resize(src, imgDisplay, Size(), 0.5, 0.5);
+
     int counter = 0;
     const int divisor = 5;
+    std::vector<dlib::rectangle> faces;
 
     // Camera
     while (true)
     {
         if (waitKey(1) >= 0) break;
 
+        vcap >> src;
+        resize(src, imgResized, Size(), 1.0 / FACE_DOWNSAMPLE_RATIO, 1.0 / FACE_DOWNSAMPLE_RATIO);
+        cv_image<bgr_pixel> cimg_small(imgResized);
+        cv_image<bgr_pixel> cimg(src);
+
         counter += 1;
-        if (counter % divisor != 0) continue;
-
-        counter = 0;
-
-        if (vcap.read(src) == false)
+        if (counter % divisor == 0)
         {
-            std::cout << "No frame" << std::endl;
-            waitKey();
+            counter = 0;
+
+            faces = detector(cimg_small);
         }
 
-        // Set Input Image's Resolution
+        for (unsigned long i = 0; i < faces.size(); ++i)
         {
-            resize(src, dst, Size(WIDTH, HEIGHT));
+            dlib::rectangle rect(
+                (long)(faces[i].left() * FACE_DOWNSAMPLE_RATIO),
+                (long)(faces[i].top() * FACE_DOWNSAMPLE_RATIO),
+                (long)(faces[i].right() * FACE_DOWNSAMPLE_RATIO),
+                (long)(faces[i].bottom() * FACE_DOWNSAMPLE_RATIO)
+            );
+            full_object_detection shape = shapePredictor(cimg, rect);
 
-            cvMat2dlib = cv_image<bgr_pixel>(dst);
-            assign_image(dlibImage, cv_image<bgr_pixel>(dst));
+            drawFace(src, shape);
         }
 
-        auto shapes = detectFaceLandmark(detector, sp, dlibImage);
-
-        drawFaceLandmarkOverlay(dlibImage, shapes);
-        drawFaceOnlyWindow(dlibImage, shapes);
+        resize(src, imgDisplay, Size(), 0.5, 0.5);
+        imshow("fast facial landmark detector", imgDisplay);
     }
 }
 
-std::vector<full_object_detection> detectFaceLandmark(frontal_face_detector &detector, shape_predictor &sp, array2d<bgr_pixel> &img)
+void drawPolyline(Mat &img, const dlib::full_object_detection& d, const int start, const int end, bool isclosed = false)
 {
-    pyramid_up(img);
-
-    std::vector<dlib::rectangle> dets = detector(img);
-    cout << "Number of faces detected : " << dets.size() << endl;
-
-    std::vector<full_object_detection> shapes;
-    for (unsigned long i = 0; i < dets.size(); i++)
+    std::vector <Point> points;
+    for (int i = start; i <= end; ++i)
     {
-        full_object_detection shape = sp(img, dets[i]);
-        //cout << "Number of parts: " << shape.num_parts() << endl;
-        //for (unsigned long j = 0; j < shape.num_parts(); j++)
-        //{
-        //    cout << "pixel position of " + to_string(j) + " part : " << shape.part(j) << endl;
-        //}
-
-        shapes.push_back(shape);
+        points.push_back(Point(d.part(i).x(), d.part(i).y()));
     }
-
-    return shapes;
+    cv::polylines(img, points, isclosed, Scalar(255, 0, 0), 2, 16);
 }
 
-void drawFaceLandmarkOverlay(array2d<bgr_pixel> &dlibImage, std::vector<full_object_detection> &shapes)
+void drawFace(Mat &img, const dlib::full_object_detection& d)
 {
-    win.clear_overlay();
-    win.set_image(dlibImage);
-    win.add_overlay(render_face_detections(shapes));
-}
-
-void drawFaceOnlyWindow(array2d<bgr_pixel> &dlibImage, std::vector<full_object_detection> &shapes)
-{
-    dlib::array<array2d<rgb_pixel> > face_chips;
-    extract_image_chips(dlibImage, get_face_chip_details(shapes), face_chips);
-    win_faces.set_image(tile_images(face_chips));
-}
-
-void detectAndDraw(Mat& img, CascadeClassifier& cascade, CascadeClassifier& nestedCascade, double scale)
-{
-    const auto Color = Scalar(255, 0, 0);
-
-    std::vector<Rect> faces;
-
-    Mat gray;
-    cvtColor(img, gray, COLOR_BGR2GRAY);
-
-    Mat smallImg;
-    double fx = 1 / scale;
-    resize(gray, smallImg, Size(), fx, fx, INTER_LINEAR_EXACT);
-    equalizeHist(smallImg, smallImg);
-
-    cascade.detectMultiScale(smallImg, faces, 1.1, 2, CASCADE_SCALE_IMAGE, Size(30, 30));
-
-    for (const auto &face : faces)
-    {
-        Mat smallImgROI;
-        std::vector<Rect> nestedObjects;
-        Point center;
-
-        int radius;
-
-        auto aspect_ratio = (double)face.width / face.height;
-        if (0.75 < aspect_ratio && aspect_ratio < 1.3)
-        {
-            center.x = cvRound((face.x + face.width*0.5)*scale);
-            center.y = cvRound((face.y + face.height*0.5)*scale);
-            radius = cvRound((face.width + face.height)*0.25*scale);
-
-            circle(img, center, radius, Color, 3, 8, 0);
-        }
-        else
-        {
-            cv::rectangle(img, Point(cvRound(face.x*scale), cvRound(face.y*scale)),
-                Point(cvRound((face.x + face.width - 1)*scale), cvRound((face.y + face.height - 1)*scale)),
-                Color, 3, 8, 0);
-        }
-
-        smallImgROI = smallImg(face);
-        nestedCascade.detectMultiScale(smallImgROI, nestedObjects, 1.1, 2, CASCADE_SCALE_IMAGE, Size(30, 30));
-        for (const auto &nr : nestedObjects)
-        {
-            center.x = cvRound((face.x + nr.x + nr.width*0.5)*scale);
-            center.y = cvRound((face.y + nr.y + nr.height*0.5)*scale);
-            radius = cvRound((nr.width + nr.height)*0.25*scale);
-
-            circle(img, center, radius, Color, 3, 8, 0);
-        }
-    }
-
-    imshow("result", img);
+    drawPolyline(img, d, 0, 16);           // jaw line
+    drawPolyline(img, d, 17, 21);          // left eyebrow
+    drawPolyline(img, d, 22, 26);          // right eyebrow
+    drawPolyline(img, d, 27, 30);          // nose bridge
+    drawPolyline(img, d, 30, 35, true);    // lower nose
+    drawPolyline(img, d, 36, 41, true);    // left eye
+    drawPolyline(img, d, 42, 47, true);    // right eye
+    drawPolyline(img, d, 48, 59, true);    // outer lip
+    drawPolyline(img, d, 60, 67, true);    // inner lip
 }
