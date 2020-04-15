@@ -26,6 +26,10 @@ using namespace dlib;
 void drawPolyline(Mat &img, const dlib::full_object_detection& d, const int start, const int end, bool isclosed);
 void drawFace(Mat &img, const dlib::full_object_detection& d);
 
+std::vector<cv::Point3d> get3dModelPoints();
+std::vector<cv::Point2d> get2dImagePoints(full_object_detection &d);
+cv::Mat getCameraMatrix(float focal_length, cv::Point2d center);
+
 int main()
 {
     VideoCapture vcap;
@@ -85,7 +89,25 @@ int main()
                 (long)(faces[i].bottom() * FACE_DOWNSAMPLE_RATIO)
             );
             full_object_detection shape = shapePredictor(cimg, rect);
+            std::vector<cv::Point2d> imagePoints = get2dImagePoints(shape);
+            std::vector<cv::Point3d> modelPoints = get3dModelPoints();
 
+            double focal_length = src.cols;
+            cv::Mat cameraMat = getCameraMatrix(focal_length, cv::Point2d(src.cols / 2, src.rows / 2));
+
+            cv::Mat rotationVector;
+            cv::Mat translationVector;
+            cv::Mat distanceCoeffs = cv::Mat::zeros(4, 1, cv::DataType<double>::type);
+
+            cv::solvePnP(modelPoints, imagePoints, cameraMat, distanceCoeffs, rotationVector, translationVector);
+
+            std::vector<cv::Point3d> noseEndPoint3d;
+            noseEndPoint3d.push_back(cv::Point3d(0, 0, 1000.0));
+
+            std::vector<cv::Point2d> noseEndPoint2d;
+            cv::projectPoints(noseEndPoint3d, rotationVector, translationVector, cameraMat, distanceCoeffs, noseEndPoint2d);
+
+            cv::line(src, imagePoints[0], noseEndPoint2d[0], cv::Scalar(0, 0, 255), 2);
             drawFace(src, shape);
         }
 
@@ -115,4 +137,36 @@ void drawFace(Mat &img, const dlib::full_object_detection& d)
     drawPolyline(img, d, 42, 47, true);    // right eye
     drawPolyline(img, d, 48, 59, true);    // outer lip
     drawPolyline(img, d, 60, 67, true);    // inner lip
+}
+
+std::vector<cv::Point3d> get3dModelPoints()
+{
+    std::vector<cv::Point3d> modelPoints;
+
+    modelPoints.push_back(cv::Point3d(0.0f, 0.0f, 0.0f)); //The first must be (0,0,0) while using POSIT
+    modelPoints.push_back(cv::Point3d(0.0f, -330.0f, -65.0f));
+    modelPoints.push_back(cv::Point3d(-225.0f, 170.0f, -135.0f));
+    modelPoints.push_back(cv::Point3d(225.0f, 170.0f, -135.0f));
+    modelPoints.push_back(cv::Point3d(-150.0f, -150.0f, -125.0f));
+    modelPoints.push_back(cv::Point3d(150.0f, -150.0f, -125.0f));
+
+    return modelPoints;
+}
+
+std::vector<cv::Point2d> get2dImagePoints(full_object_detection &d)
+{
+    std::vector<cv::Point2d> image_points;
+    image_points.push_back(cv::Point2d(d.part(30).x(), d.part(30).y()));    // Nose tip
+    image_points.push_back(cv::Point2d(d.part(8).x(), d.part(8).y()));      // Chin
+    image_points.push_back(cv::Point2d(d.part(36).x(), d.part(36).y()));    // Left eye left corner
+    image_points.push_back(cv::Point2d(d.part(45).x(), d.part(45).y()));    // Right eye right corner
+    image_points.push_back(cv::Point2d(d.part(48).x(), d.part(48).y()));    // Left Mouth corner
+    image_points.push_back(cv::Point2d(d.part(54).x(), d.part(54).y()));    // Right mouth corner
+    return image_points;
+}
+
+cv::Mat getCameraMatrix(float focal_length, cv::Point2d center)
+{
+    cv::Mat camera_matrix = (cv::Mat_<double>(3, 3) << focal_length, 0, center.x, 0, focal_length, center.y, 0, 0, 1);
+    return camera_matrix;
 }
