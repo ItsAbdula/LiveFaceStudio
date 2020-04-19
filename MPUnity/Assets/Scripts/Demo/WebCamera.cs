@@ -5,14 +5,20 @@ namespace OpenCvSharp.Demo
 	using UnityEngine.UI;
 	using OpenCvSharp;
 
-	// Many ideas are taken from http://answers.unity3d.com/questions/773464/webcamtexture-correct-resolution-and-ratio.html#answer-1155328
+#if UNITY_ANDROID
 
-	/// <summary>
-	/// Base WebCamera class that takes care about video capturing.
-	/// Is intended to be sub-classed and partially overridden to get
-	/// desired behavior in the user Unity script
-	/// </summary>
-	public abstract class WebCamera: MonoBehaviour
+    using UnityEngine.Android;
+
+#endif
+
+    // Many ideas are taken from http://answers.unity3d.com/questions/773464/webcamtexture-correct-resolution-and-ratio.html#answer-1155328
+
+    /// <summary>
+    /// Base WebCamera class that takes care about video capturing.
+    /// Is intended to be sub-classed and partially overridden to get
+    /// desired behavior in the user Unity script
+    /// </summary>
+    public abstract class WebCamera: MonoBehaviour
 	{
 		/// <summary>
 		/// Target surface to render WebCam stream
@@ -110,7 +116,14 @@ namespace OpenCvSharp.Demo
 		/// </summary>
 		protected virtual void Awake()
 		{
-			if (WebCamTexture.devices.Length == 1)
+#if UNITY_ANDROID
+            if (Permission.HasUserAuthorizedPermission(Permission.Camera) == false)
+            {
+                Permission.RequestUserPermission(Permission.Camera);
+            }
+#endif
+
+            if (WebCamTexture.devices.Length == 1)
             {
                 DeviceName = WebCamTexture.devices[WebCamTexture.devices.Length - 1].name;
             }
