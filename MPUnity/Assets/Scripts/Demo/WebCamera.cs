@@ -173,7 +173,7 @@ namespace OpenCvSharp.Demo
 				// process texture with whatever method sub-class might have in mind
 				if (ProcessTexture(webCamTexture, ref renderedTexture))
 				{
-					RenderFrame();
+					//RenderFrame();
 				}
 			}
 		}

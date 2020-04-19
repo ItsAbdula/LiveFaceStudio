@@ -12,6 +12,8 @@
 		public TextAsset eyes;
 		public TextAsset shapes;
 
+        public RawImage landmarkImage;
+
 		private FaceProcessorLive<WebCamTexture> processor;
 
 		/// <summary>
@@ -67,7 +69,9 @@
 			// processor.Image now holds data we'd like to visualize
 			output = Unity.MatToTexture(processor.Image, output);   // if output is valid texture it's buffer will be re-used, otherwise it will be re-created
 
-			return true;
+            landmarkImage.GetComponent<RawImage>().texture = Unity.MatToTexture(processor.LandMarkImage,output);
+
+            return true;
 		}
 	}
 }

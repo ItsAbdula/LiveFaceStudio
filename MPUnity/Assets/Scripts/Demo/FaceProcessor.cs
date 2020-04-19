@@ -92,6 +92,7 @@
         /// Processed texture
         /// </summary>
         public Mat Image { get; private set; }
+        public Mat LandMarkImage { get; private set; }
 
         /// <summary>
         /// Detected objects
@@ -303,26 +304,35 @@
             // mark each found eye
             foreach (DetectedFace face in Faces)
             {
+                
                 // face rect
-                Cv2.Rectangle((InputOutputArray)Image, face.Region, Scalar.FromRgb(255, 0, 0), 2);
+                Cv2.Rectangle((InputOutputArray)Image, face.Region, Scalar.FromRgb(255, 0, 0), 3);
+                //Cv2.Rectangle((InputOutputArray)LandMarkImage, face.Region, Scalar.FromRgb(255, 0, 0), 3);
 
                 // convex hull
                 //Cv2.Polylines(Image, new IEnumerable<Point>[] { face.Info.ConvexHull }, true, Scalar.FromRgb(255, 0, 0), 2);
 
                 // render face triangulation (should we have one)
-                if (face.Info != null)
-                {
-                    foreach (DetectedFace.Triangle tr in face.Info.DelaunayTriangles)
-                        Cv2.Polylines(Image, new IEnumerable<Point>[] { tr.ToArray() }, true, Scalar.FromRgb(0, 0, 255), 1);
-                }
+                /* if (face.Info != null)
+                 {
+                     foreach (DetectedFace.Triangle tr in face.Info.DelaunayTriangles)
+                         Cv2.Polylines(Image, new IEnumerable<Point>[] { tr.ToArray() }, true, Scalar.FromRgb(0, 0, 255), 1);
+                 }*/
 
                 // Sub-items
                 if (drawSubItems)
                 {
+                    LandMarkImage = new Mat(Image.Size(), Image.Type());
+
                     List<string> closedItems = new List<string>(new string[] { "Nose", "Eye", "Lip" });
                     foreach (DetectedObject sub in face.Elements)
+                    {
                         if (sub.Marks != null)
-                            Cv2.Polylines(Image, new IEnumerable<Point>[] { sub.Marks }, closedItems.Contains(sub.Name), Scalar.FromRgb(0, 255, 0), 1);
+                        {
+                            Cv2.Polylines(Image, new IEnumerable<Point>[] { sub.Marks }, closedItems.Contains(sub.Name), Scalar.FromRgb(0, 255, 0), 3);
+                            Cv2.Polylines(LandMarkImage, new IEnumerable<Point>[] { sub.Marks }, closedItems.Contains(sub.Name), Scalar.FromRgb(0, 255, 0), 3);
+                        }
+                    }
                 }
             }
         }
