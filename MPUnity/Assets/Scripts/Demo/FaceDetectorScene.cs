@@ -6,7 +6,11 @@
 	using UnityEngine.UI;
 	using OpenCvSharp;
 
-	public class FaceDetectorScene : WebCamera
+    using System.Collections;
+    using System.IO;
+    using UnityEngine.Android;
+
+    public class FaceDetectorScene : WebCamera
 	{
 		public TextAsset faces;
 		public TextAsset eyes;
@@ -16,10 +20,12 @@
 
 		private FaceProcessorLive<WebCamTexture> processor;
 
-		/// <summary>
-		/// Default initializer for MonoBehavior sub-classes
-		/// </summary>
-		protected override void Awake()
+        private bool onCapture = false;
+
+        /// <summary>
+        /// Default initializer for MonoBehavior sub-classes
+        /// </summary>
+        protected override void Awake()
 		{
 			base.Awake();
 			base.forceFrontalCamera = true; // we work with frontal cams here, let's force it for macOS s MacBook doesn't state frontal cam correctly
@@ -73,5 +79,71 @@
 
             return true;
 		}
-	}
+
+        public void PressBtnCapture()
+        {
+            if (onCapture == false)
+            {
+                StartCoroutine("CRSaveScreenshot");
+            }
+        }
+
+        IEnumerator CRSaveScreenshot()
+        {
+            onCapture = true;
+
+            yield return new WaitForEndOfFrame();
+
+            if (Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite) == false)
+            {
+                Permission.RequestUserPermission(Permission.ExternalStorageWrite);
+
+                yield return new WaitForSeconds(0.2f);
+                yield return new WaitUntil(() => Application.isFocused == true);
+
+                if (Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite) == false)
+                {
+                    yield break;
+                }
+            }
+
+            string fileLocation = "mnt/sdcard/MediaProject/";
+            string filename = Application.productName + "_" + System.DateTime.Now.ToString("yyyyMMddHHmmss") + ".png";
+            string finalLOC = fileLocation + filename;
+
+            if (!Directory.Exists(fileLocation))
+            {
+                Directory.CreateDirectory(fileLocation);
+            }
+
+            byte[] imageByte; //스크린샷을 Byte로 저장.Texture2D use 
+
+            RectTransform transform = landmarkImage.GetComponent<RectTransform>();
+
+            Vector2 size = Vector2.Scale(transform.rect.size, transform.lossyScale);
+            UnityEngine.Rect rect = new UnityEngine.Rect(transform.position.x, Screen.height - transform.position.y, size.x, size.y);
+            rect.x -= (transform.pivot.x * size.x);
+            rect.y -= ((1.0f - transform.pivot.y) * size.y);
+
+            Debug.Log(rect);
+
+            Texture2D tex = new Texture2D((int)rect.width, (int)rect.height, TextureFormat.RGB24, true);
+            tex.ReadPixels(rect, 0, 0, true);
+            tex.Apply();
+
+            imageByte = tex.EncodeToPNG();
+            DestroyImmediate(tex);
+
+            File.WriteAllBytes(finalLOC, imageByte);
+
+
+            AndroidJavaClass classPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+            AndroidJavaObject objActivity = classPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+            AndroidJavaClass classUri = new AndroidJavaClass("android.net.Uri");
+            AndroidJavaObject objIntent = new AndroidJavaObject("android.content.Intent", new object[2] { "android.intent.action.MEDIA_SCANNER_SCAN_FILE", classUri.CallStatic<AndroidJavaObject>("parse", "file://" + finalLOC) });
+            objActivity.Call("sendBroadcast", objIntent);
+
+            onCapture = false;
+        }
+    }
 }
