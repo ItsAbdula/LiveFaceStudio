@@ -127,7 +127,7 @@ namespace OpenCvSharp.Demo
             {
                 DeviceName = WebCamTexture.devices[WebCamTexture.devices.Length - 1].name;
             }
-            else if(WebCamTexture.devices.Length>1)
+            else if(WebCamTexture.devices.Length > 1)
             {
                 string frontCamName = "";
 

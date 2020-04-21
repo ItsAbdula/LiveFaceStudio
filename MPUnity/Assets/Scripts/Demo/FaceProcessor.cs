@@ -1,14 +1,14 @@
 ﻿namespace OpenCvSharp.Demo
 {
-	using System;
-	using System.Collections.Generic;
-	using OpenCvSharp;
+    using System;
+    using System.Collections.Generic;
+    using OpenCvSharp;
 
-	/// <summary>
-	/// Array utilities
-	/// http://stackoverflow.com/questions/1792470/subset-of-array-in-c-sharp
-	/// </summary>
-	static partial class ArrayUtilities
+    /// <summary>
+    /// Array utilities
+    /// http://stackoverflow.com/questions/1792470/subset-of-array-in-c-sharp
+    /// </summary>
+    static partial class ArrayUtilities
     {
         // create a subset from a range of indices
         public static T[] RangeSubset<T>(this T[] array, int startIndex, int length)
@@ -39,12 +39,12 @@
     /// <summary>
     /// Holds face processor performance trick parameters
     /// </summary>
-    class FaceProcessorPerformanceParams
+    internal class FaceProcessorPerformanceParams
     {
         /// <summary>
         /// Downscale limit, texture processing will downscale input up to this size
         /// If is less or equals to zero than downscaling is not applied
-        /// 
+        ///
         /// Downscaling is applied with preserved aspect ratio
         /// </summary>
         public int Downscale { get; set; }
@@ -67,8 +67,8 @@
     /// <summary>
     /// High-level wrapper around OpenCV and DLib functionality that simplifies face detection tasks
     /// </summary>
-    class FaceProcessor<T>
-        where T: UnityEngine.Texture
+    internal class FaceProcessor<T>
+        where T : UnityEngine.Texture
     {
         protected CascadeClassifier cascadeFaces = null;
         protected CascadeClassifier cascadeEyes = null;
@@ -76,7 +76,7 @@
 
         protected Mat processingImage = null;
         protected Double appliedFactor = 1.0;
-		protected bool cutFalsePositivesWithEyesSearch = false;
+        protected bool cutFalsePositivesWithEyesSearch = false;
 
         /// <summary>
         /// Performance options
@@ -92,6 +92,7 @@
         /// Processed texture
         /// </summary>
         public Mat Image { get; private set; }
+
         public Mat LandMarkImage { get; private set; }
 
         /// <summary>
@@ -238,8 +239,8 @@
 
                 // detect matching regions (faces bounding)
                 Rect[] rawFaces = cascadeFaces.DetectMultiScale(gray, 1.2, 6);
-				if (Faces.Count != rawFaces.Length)
-					Faces.Clear();
+                if (Faces.Count != rawFaces.Length)
+                    Faces.Clear();
 
                 // now per each detected face draw a marker and detect eyes inside the face rect
                 int facesCount = 0;
@@ -304,7 +305,6 @@
             // mark each found eye
             foreach (DetectedFace face in Faces)
             {
-                
                 // face rect
                 Cv2.Rectangle((InputOutputArray)Image, face.Region, Scalar.FromRgb(255, 0, 0), 3);
                 //Cv2.Rectangle((InputOutputArray)LandMarkImage, face.Region, Scalar.FromRgb(255, 0, 0), 3);
@@ -341,7 +341,7 @@
     /// <summary>
     /// FaceProcessor subclass designed for live (web camera or stream) processing
     /// </summary>
-    class FaceProcessorLive<T> : FaceProcessor<T>
+    internal class FaceProcessorLive<T> : FaceProcessor<T>
         where T : UnityEngine.Texture
     {
         private int frameCounter = 0;
@@ -351,7 +351,7 @@
         /// </summary>
         public FaceProcessorLive()
             : base()
-        {}
+        { }
 
         /// <summary>
         /// Detector
@@ -359,7 +359,7 @@
         /// <param name="inputTexture">Input Unity texture</param>
         /// <param name="texParams">Texture parameters (flipped, rotated etc.)</param>
         /// <param name="detect">Flag signalling whether we need detection on this frame</param>
-        public override void ProcessTexture(T texture, Unity.TextureConversionParams texParams,  bool detect = true)
+        public override void ProcessTexture(T texture, Unity.TextureConversionParams texParams, bool detect = true)
         {
             bool acceptedFrame = (0 == Performance.SkipRate || 0 == frameCounter++ % Performance.SkipRate);
             base.ProcessTexture(texture, texParams, detect && acceptedFrame);
