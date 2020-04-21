@@ -7,7 +7,7 @@ public class TestUI : MonoBehaviour
     private int _currentCharacterIndex = 0;
 
     [SerializeField]
-    private Color _currentColor;
+    private Color[] eyeColors;
 
     [SerializeField]
     private GameObject[] characters;
@@ -25,14 +25,20 @@ public class TestUI : MonoBehaviour
         ShowCharacter(_currentCharacterIndex);
     }
 
-    public void SetEyeColor()
+    public void SetEyeColor(int colorIndex)
     {
         if(leftEyes[_currentCharacterIndex] == null)
         {
             return;
         }
 
-        leftEyes[_currentCharacterIndex].GetComponent<Live2D.Cubism.Rendering.CubismRenderer>().Color = _currentColor;
+        if(colorIndex < 0 || colorIndex >= eyeColors.Length)
+        {
+            Debug.LogError("Eye color index 범위 벗어남");
+            return;
+        }
+        
+        leftEyes[_currentCharacterIndex].GetComponent<Live2D.Cubism.Rendering.CubismRenderer>().Color = eyeColors[colorIndex];
     }
 
     private void ShowCharacter(int index)
