@@ -92,7 +92,6 @@
         /// Processed texture
         /// </summary>
         public Mat Image { get; private set; }
-        public Mat LandMarkImage { get; private set; }
 
         /// <summary>
         /// Detected objects
@@ -304,7 +303,6 @@
             // mark each found eye
             foreach (DetectedFace face in Faces)
             {
-                
                 // face rect
                 Cv2.Rectangle((InputOutputArray)Image, face.Region, Scalar.FromRgb(255, 0, 0), 3);
                 //Cv2.Rectangle((InputOutputArray)LandMarkImage, face.Region, Scalar.FromRgb(255, 0, 0), 3);
@@ -320,22 +318,27 @@
                  }*/
 
                 // Sub-items
+                Mat LandMarkImage = new Mat(Image.Size(), Image.Type());
+
                 if (drawSubItems)
                 {
-                    LandMarkImage = new Mat(Image.Size(), Image.Type());
-
                     List<string> closedItems = new List<string>(new string[] { "Nose", "Eye", "Lip" });
                     foreach (DetectedObject sub in face.Elements)
                     {
                         if (sub.Marks != null)
                         {
-                            Cv2.Polylines(Image, new IEnumerable<Point>[] { sub.Marks }, closedItems.Contains(sub.Name), Scalar.FromRgb(0, 255, 0), 3);
-                            Cv2.Polylines(LandMarkImage, new IEnumerable<Point>[] { sub.Marks }, closedItems.Contains(sub.Name), Scalar.FromRgb(0, 255, 0), 3);
+                            Scalar color = Scalar.FromRgb(255,255,255);
+                            if (sub.Name == "Nose") color = Scalar.FromRgb(255, 0, 0);
+                            else if (sub.Name == "Eye") color = Scalar.FromRgb(0, 255, 0);
+                            else if (sub.Name == "Lip") color = Scalar.FromRgb(0, 0, 255);
+                            Cv2.Polylines(Image, new IEnumerable<Point>[] { sub.Marks }, /*closedItems.Contains(sub.Name)*/true, color, 3);
                         }
                     }
                 }
             }
         }
+
+        public List<DetectedFace> GetDetectedFaces() { return Faces; }
     }
 
     /// <summary>

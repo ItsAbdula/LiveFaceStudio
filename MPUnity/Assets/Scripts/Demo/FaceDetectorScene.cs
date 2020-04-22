@@ -16,7 +16,7 @@
 		public TextAsset eyes;
 		public TextAsset shapes;
 
-        public RawImage landmarkImage;
+        public FaceLandmark faceImage;
 
 		private FaceProcessorLive<WebCamTexture> processor;
 
@@ -70,12 +70,47 @@
 			processor.ProcessTexture(input, TextureParameters);
 
 			// mark detected objects
-			processor.MarkDetected();
+			//processor.MarkDetected();
 
-			// processor.Image now holds data we'd like to visualize
-			output = Unity.MatToTexture(processor.Image, output);   // if output is valid texture it's buffer will be re-used, otherwise it will be re-created
+            // processor.Image now holds data we'd like to visualize
+            output = Unity.MatToTexture(processor.Image, output);   // if output is valid texture it's buffer will be re-used, otherwise it will be re-created
 
-            landmarkImage.GetComponent<RawImage>().texture = Unity.MatToTexture(processor.LandMarkImage,output);
+            List<DetectedFace> Faces = processor.GetDetectedFaces();
+            // mark each found eye
+            foreach (DetectedFace face in Faces)
+            {
+                // face rect
+                faceImage.setSize(input.width, input.height);
+                faceImage.setFaceRect(face.Region);
+
+                // Sub-items
+                List<string> closedItems = new List<string>(new string[] { "Nose", "Eye", "Lip" });
+                int eyeCount = 0;
+                int lipCount = 0;
+                foreach (DetectedObject sub in face.Elements)
+                {
+                    if (sub.Marks != null)
+                    {
+                        int type = -1;
+                        if (sub.Name == "Eye" || sub.Name == "Nose" || sub.Name == "Lip")
+                        {
+                            if (sub.Name == "Nose") type = 1;
+                            else if (sub.Name == "Lip")
+                            {
+                                type = 2 + lipCount;
+                                ++lipCount;
+                            }
+                            else if (sub.Name == "Eye")
+                            {
+                                type = 4 + eyeCount;
+                                ++eyeCount;
+                            }
+                            IEnumerable<Point>[] ptr = new IEnumerable<Point>[] { sub.Marks };
+                            faceImage.setLandmark(ptr, type);
+                        }
+                    }
+                }
+            }
 
             return true;
 		}
@@ -118,7 +153,7 @@
 
             byte[] imageByte; //스크린샷을 Byte로 저장.Texture2D use 
 
-            RectTransform transform = landmarkImage.GetComponent<RectTransform>();
+            RectTransform transform = faceImage.GetComponent<RectTransform>();
 
             Vector2 size = Vector2.Scale(transform.rect.size, transform.lossyScale);
             UnityEngine.Rect rect = new UnityEngine.Rect(transform.position.x, Screen.height - transform.position.y, size.x, size.y);
