@@ -19135,7 +19135,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ba3ce65e70144404d833122550144ac5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _currentColor: {r: 0.754717, g: 0.18155926, b: 0.18155926, a: 1}
+  eyeColors:
+  - {r: 0.7924528, g: 0.25044498, b: 0.25044498, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0.114498034, g: 0.19240233, b: 0.7830189, a: 1}
   characters:
   - {fileID: 3717716785185209531}
   - {fileID: 5784673627325268273}
