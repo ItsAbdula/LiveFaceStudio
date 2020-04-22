@@ -334,7 +334,87 @@
                         }
                     }
                 }
+
+                {
+                    if (face.Marks == null || face.Marks.Length == 0) return;
+
+                    var frontalVector = GetFaceFrontalVector(face.Marks);
+#if DEBUG
+                    UnityEngine.Debug.Log(string.Format("X : {0}, Y : {1}", frontalVector.X, frontalVector.Y));
+#endif
+                }
             }
+        }
+
+        private Point2f GetFaceFrontalVector(Point[] marks)
+        {
+            var imagePoints = Get2dImagePoints(marks);
+            var modelPoints = Get3dModelPoints();
+
+            var cameraMat = GetCameraMatrix(processingImage.Size().Height, new Point2d(processingImage.Size().Height / 2, processingImage.Size().Width / 2));
+            var distanceCoeffs = new double[4];
+            var rotationVector = new double[4];
+            var translationVector = new double[4];
+
+            Cv2.SolvePnP(modelPoints, imagePoints, cameraMat, distanceCoeffs, out rotationVector, out translationVector);
+
+            var noseEndPoint3d = new List<Point3f> { new Point3f(0, 0, 1000.0f) };
+
+            var noseEndPoint2d = new Point2f[6];
+            var jacobian = new double[4, 4];
+            Cv2.ProjectPoints(noseEndPoint3d, rotationVector, translationVector, cameraMat, distanceCoeffs, out noseEndPoint2d, out jacobian);
+
+            var result = new Point2f(noseEndPoint2d[0].X - imagePoints[0].X, noseEndPoint2d[0].Y - imagePoints[0].Y);
+
+            return result;
+        }
+
+        private List<Point2f> Get2dImagePoints(Point[] points)
+        {
+            List<Point2f> imagePoints = new List<Point2f>
+            {
+                new Point2f(points[30].X, points[30].Y),    // Nose tip
+                new Point2f(points[8].X, points[8].Y),      // Chin
+                new Point2f(points[36].X, points[36].Y),    // Left eye left corner
+                new Point2f(points[45].X, points[45].Y),    // Right eye right corner
+                new Point2f(points[48].X, points[48].Y),    // Left Mouth corner
+                new Point2f(points[54].X, points[54].Y)    // Right mouth corner
+            };
+
+            return imagePoints;
+        }
+
+        private List<Point3f> Get3dModelPoints()
+        {
+            List<Point3f> modelPoints = new List<Point3f>
+            {
+                new Point3f(0.0f, 0.0f, 0.0f), //The first must be (0,0,0) while using POSIT
+                new Point3f(0.0f, -330.0f, -65.0f),
+                new Point3f(-225.0f, 170.0f, -135.0f),
+                new Point3f(225.0f, 170.0f, -135.0f),
+                new Point3f(-150.0f, -150.0f, -125.0f),
+                new Point3f(150.0f, -150.0f, -125.0f)
+            };
+
+            return modelPoints;
+        }
+
+        private double[,] GetCameraMatrix(double focalLength, Point2d center)
+        {
+            double[,] cameraMatrix = new double[3, 3];
+            cameraMatrix[0, 0] = focalLength;
+            cameraMatrix[0, 1] = 0;
+            cameraMatrix[0, 2] = center.X;
+
+            cameraMatrix[1, 0] = 0;
+            cameraMatrix[1, 1] = focalLength;
+            cameraMatrix[1, 2] = center.Y;
+
+            cameraMatrix[2, 0] = 0;
+            cameraMatrix[2, 1] = 0;
+            cameraMatrix[2, 2] = 1;
+
+            return cameraMatrix;
         }
     }
 
