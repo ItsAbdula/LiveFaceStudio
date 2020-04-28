@@ -3,9 +3,6 @@
 	using UnityEngine;
 	using System.Collections;
 	
-	/// <summary>
-	/// This script scale surface with WebCameraTexuture to match the screen size
-	/// </summary>
 	public class CameraScaler : MonoBehaviour {
 		private Vector2 ScreenSize {
 			get;
@@ -41,7 +38,7 @@
 			}
 	
 			float aspect = Mathf.Min(Screen.height / height, Screen.width / width);
-			//this.transform.localScale = new Vector3 (aspect, aspect, 1.0f);
+			this.transform.localScale = new Vector3 (aspect, aspect, 1.0f);
 		}
 	}
 }

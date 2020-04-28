@@ -18,7 +18,6 @@ public class FaceLandmark : MonoBehaviour
 
     float aspect;
 
-    // Start is called before the first frame update
     void Start()
     {
         objectRect = this.GetComponent<RectTransform>().rect;
