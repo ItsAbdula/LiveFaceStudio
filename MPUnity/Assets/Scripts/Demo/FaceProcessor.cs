@@ -55,7 +55,6 @@
 
         public FaceProcessorPerformanceParams Performance { get; private set; }
 
-        /// face rect, face landmarks etc.
         public DataStabilizerParams DataStabilizer { get; private set; }
 
         public Mat Image { get; private set; }
@@ -154,12 +153,6 @@
 
                 Cv2.EqualizeHist(gray, gray);
 
-                /*Mat normalized = new Mat();
-                CLAHE clahe = CLAHE.Create();
-                clahe.TilesGridSize = new Size(8, 8);
-                clahe.Apply(gray, normalized);
-                gray = normalized;*/
-
                 Rect[] rawFaces = cascadeFaces.DetectMultiScale(gray, 1.2, 6);
 				if (Faces.Count != rawFaces.Length)
 					Faces.Clear();
@@ -212,13 +205,10 @@
 
         public void MarkDetected(bool drawSubItems = true)
         {
-            // mark each found eye
             foreach (DetectedFace face in Faces)
             {
-                // face rect
                 Cv2.Rectangle((InputOutputArray)Image, face.Region, Scalar.FromRgb(255, 0, 0), 3);
 
-                // Sub-items
                 Mat LandMarkImage = new Mat(Image.Size(), Image.Type());
 
                 if (drawSubItems)

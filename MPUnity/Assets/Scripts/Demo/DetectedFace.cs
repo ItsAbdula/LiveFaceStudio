@@ -71,70 +71,6 @@
             InnerLip
         }
 
-        public struct Triangle
-        {
-            public Point i;
-            public Point j;
-            public Point k;
-
-            public Triangle(Vec6f vec)
-            {
-                i = new Point((int)(vec[0] + 0.5), (int)(vec[1] + 0.5));
-                j = new Point((int)(vec[2] + 0.5), (int)(vec[3] + 0.5));
-                k = new Point((int)(vec[4] + 0.5), (int)(vec[5] + 0.5));
-            }
-
-            public Point[] ToArray()
-            {
-                return new Point[] { i, j, k };
-            }
-        }
-
-        public sealed class FaceInfo
-        {
-            public Point[] ConvexHull { get; private set; }
-
-            public Triangle[] DelaunayTriangles { get; private set; }
-
-            internal FaceInfo(Point[] hull, Triangle[] triangles)
-            {
-                ConvexHull = hull;
-                DelaunayTriangles = triangles;
-            }
-        }
-
-        public FaceInfo Info
-        {
-            get
-            {
-                if (null == faceInfo)
-                {
-                    if (null == Marks)
-                        return null;
-
-                    Point[] hull = Cv2.ConvexHull(Marks);
-
-                    Rect bounds = Rect.BoundingBoxForPoints(hull);
-                    Subdiv2D subdiv = new Subdiv2D(bounds);
-                    foreach (Point pt in Marks)
-                        subdiv.Insert(pt);
-
-                    Vec6f[] vecs = subdiv.GetTriangleList();
-                    List<Triangle> triangles = new List<Triangle>();
-                    for (int i = 0; i < vecs.Length; ++i)
-                    {
-                        Triangle t = new Triangle(vecs[i]);
-                        if (bounds.Contains(t.ToArray()))
-                            triangles.Add(t);
-                    }
-
-                    faceInfo = new FaceInfo(hull, triangles.ToArray());
-                }
-                return faceInfo;
-            }
-        }
-
-        protected FaceInfo faceInfo = null;
         RectStabilizer faceStabilizer = null;
 
         public DetectedFace(DataStabilizerParams stabilizerParameters, Rect roi)
@@ -148,7 +84,7 @@
             faceStabilizer.Sample = roi;
 
             Region = faceStabilizer.Sample;
-            faceInfo = null;
+            //faceInfo = null;
         }
 
         public bool DefineSubObject(FaceElements element, string name, int fromMark, int toMark, bool updateMarks = true)
@@ -208,9 +144,6 @@
                 if (obj.Marks != null)
                     fetched.AddRange(obj.Marks);
             Marks = fetched.ToArray();
-
-            // drop cache
-            faceInfo = null;
         }
     }
 }
