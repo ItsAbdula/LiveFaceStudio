@@ -108,6 +108,12 @@ int main()
             cv::projectPoints(noseEndPoint3d, rotationVector, translationVector, cameraMat, distanceCoeffs, noseEndPoint2d);
 
             cv::line(src, imagePoints[0], noseEndPoint2d[0], cv::Scalar(0, 0, 255), 2);
+
+            cout << string(" X : ") + to_string(rotationVector.at<double>(0, 0));
+            cout << string(" Y : ") + to_string(rotationVector.at<double>(0, 1));
+            cout << string(" Z : ") + to_string(rotationVector.at<double>(0, 2));
+            cout << std::endl;
+
             drawFace(src, shape);
         }
 
