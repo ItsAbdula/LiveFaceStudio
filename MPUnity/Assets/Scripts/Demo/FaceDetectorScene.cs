@@ -1,50 +1,50 @@
 ﻿namespace OpenCvSharp.Demo
 {
-	using System;
-	using UnityEngine;
-	using System.Collections.Generic;
-	using UnityEngine.UI;
-	using OpenCvSharp;
+    using System;
+    using UnityEngine;
+    using System.Collections.Generic;
+    using UnityEngine.UI;
+    using OpenCvSharp;
 
     using System.Collections;
     using System.IO;
     using UnityEngine.Android;
 
     public class FaceDetectorScene : WebCamera
-	{
-		public TextAsset faces;
-		public TextAsset eyes;
-		public TextAsset shapes;
+    {
+        public TextAsset faces;
+        public TextAsset eyes;
+        public TextAsset shapes;
 
         public FaceLandmark faceImage;
 
-		private FaceProcessorLive<WebCamTexture> processor;
+        private FaceProcessorLive<WebCamTexture> processor;
 
         private bool onCapture = false;
 
         protected override void Awake()
-		{
-			base.Awake();
-			base.forceFrontalCamera = true;
+        {
+            base.Awake();
+            base.forceFrontalCamera = true;
 
-			processor = new FaceProcessorLive<WebCamTexture>();
-			processor.Initialize(faces.text, eyes.text, shapes.bytes);
+            processor = new FaceProcessorLive<WebCamTexture>();
+            processor.Initialize(faces.text, eyes.text, shapes.bytes);
 
-			// data stabilizer - affects face rects, face landmarks etc.
-			processor.DataStabilizer.Enabled = true;
-			processor.DataStabilizer.Threshold = 1.0;       // threshold value in pixels
-			processor.DataStabilizer.SamplesCount = 1;      // how many samples do we need to compute stable data
+            // data stabilizer - affects face rects, face landmarks etc.
+            processor.DataStabilizer.Enabled = true;
+            processor.DataStabilizer.Threshold = 1.0;       // threshold value in pixels
+            processor.DataStabilizer.SamplesCount = 1;      // how many samples do we need to compute stable data
 
-			// performance data - some tricks to make it work faster
-			processor.Performance.Downscale = 256;          // processed image is pre-scaled down to N px by long side
-			processor.Performance.SkipRate = 0;             // we actually process only each Nth frame (and every frame for skipRate = 0)
-		}
+            // performance data - some tricks to make it work faster
+            processor.Performance.Downscale = 256;          // processed image is pre-scaled down to N px by long side
+            processor.Performance.SkipRate = 0;             // we actually process only each Nth frame (and every frame for skipRate = 0)
+        }
 
-		protected override bool ProcessTexture(WebCamTexture input, ref Texture2D output)
-		{
-			processor.ProcessTexture(input, TextureParameters);
+        protected override bool ProcessTexture(WebCamTexture input, ref Texture2D output)
+        {
+            processor.ProcessTexture(input, TextureParameters);
 
-			processor.MarkDetected();
+            processor.MarkDetected();
 
             output = Unity.MatToTexture(processor.Image, output);
 
@@ -83,7 +83,7 @@
             }
 
             return true;
-		}
+        }
 
         public void PressBtnCapture()
         {
@@ -93,7 +93,7 @@
             }
         }
 
-        IEnumerator SaveScreenshot()
+        private IEnumerator SaveScreenshot()
         {
             onCapture = true;
 
@@ -121,7 +121,7 @@
                 Directory.CreateDirectory(fileLocation);
             }
 
-            byte[] imageByte; //스크린샷을 Byte로 저장.Texture2D use 
+            byte[] imageByte; //스크린샷을 Byte로 저장.Texture2D use
 
             RectTransform transform = faceImage.GetComponent<RectTransform>();
 

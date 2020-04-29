@@ -1,10 +1,10 @@
 ﻿namespace OpenCvSharp.Demo
 {
-	using System;
-	using System.Collections.Generic;
-	using OpenCvSharp;
+    using System;
+    using System.Collections.Generic;
+    using OpenCvSharp;
 
-	static partial class ArrayUtilities
+    static partial class ArrayUtilities
     {
         public static T[] RangeSubset<T>(this T[] array, int startIndex, int length)
         {
@@ -29,7 +29,7 @@
         }
     }
 
-    class FaceProcessorPerformanceParams
+    internal class FaceProcessorPerformanceParams
     {
         public int Downscale { get; set; }
 
@@ -42,8 +42,8 @@
         }
     }
 
-    class FaceProcessor<T>
-        where T: UnityEngine.Texture
+    internal class FaceProcessor<T>
+        where T : UnityEngine.Texture
     {
         protected CascadeClassifier cascadeFaces = null;
         protected CascadeClassifier cascadeEyes = null;
@@ -51,7 +51,7 @@
 
         protected Mat processingImage = null;
         protected Double appliedFactor = 1.0;
-		protected bool cutFalsePositivesWithEyesSearch = false;
+        protected bool cutFalsePositivesWithEyesSearch = false;
 
         public FaceProcessorPerformanceParams Performance { get; private set; }
 
@@ -93,7 +93,7 @@
             }
         }
 
-       protected virtual Mat MatFromTexture(T texture, Unity.TextureConversionParams texParams)
+        protected virtual Mat MatFromTexture(T texture, Unity.TextureConversionParams texParams)
         {
             if (texture is UnityEngine.Texture2D)
                 return Unity.TextureToMat(texture as UnityEngine.Texture2D, texParams);
@@ -154,8 +154,8 @@
                 Cv2.EqualizeHist(gray, gray);
 
                 Rect[] rawFaces = cascadeFaces.DetectMultiScale(gray, 1.2, 6);
-				if (Faces.Count != rawFaces.Length)
-					Faces.Clear();
+                if (Faces.Count != rawFaces.Length)
+                    Faces.Clear();
 
                 int facesCount = 0;
                 for (int i = 0; i < rawFaces.Length; ++i)
@@ -218,7 +218,7 @@
                     {
                         if (sub.Marks != null)
                         {
-                            Scalar color = Scalar.FromRgb(255,255,255);
+                            Scalar color = Scalar.FromRgb(255, 255, 255);
                             if (sub.Name == "Nose") color = Scalar.FromRgb(255, 0, 0);
                             else if (sub.Name == "Eye") color = Scalar.FromRgb(0, 255, 0);
                             else if (sub.Name == "Lip") color = Scalar.FromRgb(0, 0, 255);
@@ -309,19 +309,22 @@
             return cameraMatrix;
         }
 
-        public List<DetectedFace> GetDetectedFaces() { return Faces; }
+        public List<DetectedFace> GetDetectedFaces()
+        {
+            return Faces;
+        }
     }
 
-    class FaceProcessorLive<T> : FaceProcessor<T>
+    internal class FaceProcessorLive<T> : FaceProcessor<T>
         where T : UnityEngine.Texture
     {
         private int frameCounter = 0;
 
         public FaceProcessorLive()
             : base()
-        {}
+        { }
 
-        public override void ProcessTexture(T texture, Unity.TextureConversionParams texParams,  bool detect = true)
+        public override void ProcessTexture(T texture, Unity.TextureConversionParams texParams, bool detect = true)
         {
             bool acceptedFrame = (0 == Performance.SkipRate || 0 == frameCounter++ % Performance.SkipRate);
             base.ProcessTexture(texture, texParams, detect && acceptedFrame);

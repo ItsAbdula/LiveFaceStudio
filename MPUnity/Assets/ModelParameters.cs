@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using Live2D.Cubism.Core;
 
-
 public class ModelParameters : MonoBehaviour
 {
     private CubismModel model;
     private CubismParameter[] parameters;
-    
+
     // CubismModel 에서 수정할 parameter의 index 저장. 모델마다 다름.
     private enum ParamIdx
     {
@@ -32,23 +31,28 @@ public class ModelParameters : MonoBehaviour
     // 전달되는 값에 따라 범위 조정 필요
     [Range(-30f, 30f)]
     public float FaceAngleX = 0;
+
     [Range(-30f, 30f)]
     public float FaceAngleY = 0;
+
     [Range(-30f, 30f)]
     public float FaceAngleZ = 0;
 
     [Range(0f, 1.2f)]
     public float LEyeOpen = 1;
+
     [Range(0f, 1.2f)]
     public float REyeOpen = 1;
 
     [Range(-1f, 1f)]
     public float EyeDirX = 0;
+
     [Range(-1f, 1f)]
     public float EyeDirY = 0;
 
     [Range(-1f, 1f)]
     public float LEyebrowHeight = 0;
+
     [Range(-1f, 1f)]
     public float REyebrowHeight = 0;
 
@@ -81,7 +85,4 @@ public class ModelParameters : MonoBehaviour
 
         parameters[(int)ParamIdx.MouthOpen].Value = MouthOpen;
     }
-
-
-
 }

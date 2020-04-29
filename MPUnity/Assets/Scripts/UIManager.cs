@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
 
     [SerializeField]
     private GameObject[] characters;
+
     [SerializeField]
     private GameObject[] leftEyes;
 

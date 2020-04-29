@@ -1,12 +1,12 @@
 ﻿namespace OpenCvSharp.Demo
 {
-	using System;
-	using System.Collections.Generic;
-	using OpenCvSharp;
+    using System;
+    using System.Collections.Generic;
+    using OpenCvSharp;
 
-	class DetectedObject
+    internal class DetectedObject
     {
-        PointsDataStabilizer marksStabilizer = null;
+        private PointsDataStabilizer marksStabilizer = null;
 
         public DetectedObject(DataStabilizerParams stabilizerParameters)
         {
@@ -52,7 +52,7 @@
         }
     }
 
-    class DetectedFace : DetectedObject
+    internal class DetectedFace : DetectedObject
     {
         public enum FaceElements
         {
@@ -71,7 +71,7 @@
             InnerLip
         }
 
-        RectStabilizer faceStabilizer = null;
+        private RectStabilizer faceStabilizer = null;
 
         public DetectedFace(DataStabilizerParams stabilizerParameters, Rect roi)
             : base(stabilizerParameters, "Face", roi)

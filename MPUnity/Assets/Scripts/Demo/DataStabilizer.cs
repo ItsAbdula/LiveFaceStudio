@@ -1,10 +1,10 @@
 ﻿namespace OpenCvSharp.Demo
 {
-	using System;
-	using System.Collections.Generic;
-	using OpenCvSharp;
+    using System;
+    using System.Collections.Generic;
+    using OpenCvSharp;
 
-	class DataStabilizerParams
+    internal class DataStabilizerParams
     {
         public bool Enabled { get; set; }
 
@@ -13,7 +13,7 @@
 
         /// Threshold scale factor (should processing space be scaled)
         public double ThresholdFactor { get; set; }
-        
+
         public int SamplesCount { get; set; }
 
         public double GetScaledThreshold()
@@ -30,7 +30,7 @@
         }
     }
 
-    interface IDataStabilizer<T>
+    internal interface IDataStabilizer<T>
     {
         DataStabilizerParams Params { get; set; }
 
@@ -39,7 +39,7 @@
         bool LastApplied { get; set; }
     }
 
-    abstract class DataStabilizerBase<T>
+    internal abstract class DataStabilizerBase<T>
     {
         protected T result;                     // computer output sample
         protected bool dirty = true;            // flag signals whether "result" sample must be recomputed
@@ -113,7 +113,7 @@
         protected abstract T DefaultValue();
     }
 
-    class PointsDataStabilizer : DataStabilizerBase<Point[]>
+    internal class PointsDataStabilizer : DataStabilizerBase<Point[]>
     {
         public bool PerPointProcessing { get; set; }
 
@@ -166,7 +166,7 @@
                 result = average;
                 return true;
             }
-            
+
             double dmin = double.MaxValue, dmax = double.MinValue, dmean = 0.0;
             double[] distance = new double[result.Length];
             for (int i = 0; i < result.Length; ++i)
@@ -208,12 +208,12 @@
         }
     }
 
-    class RectStabilizer : DataStabilizerBase<Rect>
+    internal class RectStabilizer : DataStabilizerBase<Rect>
     {
         public RectStabilizer(DataStabilizerParams parameters)
             : base(parameters)
-        {}
-        
+        { }
+
         protected override Rect ComputeAverageSample()
         {
             Rect average = new Rect();
@@ -226,7 +226,7 @@
         }
 
         protected override void ValidateSample(Rect sample)
-        {}
+        { }
 
         protected override bool PrepareStabilizedSample()
         {

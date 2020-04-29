@@ -13,12 +13,12 @@ public class FaceLandmark : MonoBehaviour
     public GameObject Lip2;
     public GameObject Face;
 
-    OpenCvSharp.Rect faceRect;
-    UnityEngine.Rect objectRect;
+    private OpenCvSharp.Rect faceRect;
+    private UnityEngine.Rect objectRect;
 
-    float aspect;
+    private float aspect;
 
-    void Start()
+    private void Start()
     {
         objectRect = this.GetComponent<RectTransform>().rect;
     }
@@ -26,25 +26,29 @@ public class FaceLandmark : MonoBehaviour
     public void setLandmark(IEnumerable<IEnumerable<Point>> pts, int type)
     {
         GameObject obj = null;
-        switch(type)
+        switch (type)
         {
             case 1:
                 obj = Nose;
                 break;
+
             case 2:
                 obj = Eye1;
                 break;
+
             case 3:
                 obj = Eye2;
                 break;
+
             case 4:
                 obj = Lip1;
                 break;
+
             case 5:
                 obj = Lip2;
                 break;
         }
-        if(obj != null)
+        if (obj != null)
         {
             List<Point[]> ptsList = new List<Point[]>();
             List<int> nptsList = new List<int>();
@@ -54,13 +58,13 @@ public class FaceLandmark : MonoBehaviour
                 ptsList.Add(pts1Arr);
                 nptsList.Add(pts1Arr.Length);
             }
-            int maxX=0, maxY=0, minX=0, minY=0;
-            for(int i=0;i<ptsList.Count; ++i)
+            int maxX = 0, maxY = 0, minX = 0, minY = 0;
+            for (int i = 0; i < ptsList.Count; ++i)
             {
                 Point[] ptsArr = ptsList[i];
                 maxX = minX = ptsArr[0].X;
                 maxY = minY = ptsArr[0].Y;
-                for(int j=1; j<ptsArr.Length; ++j)
+                for (int j = 1; j < ptsArr.Length; ++j)
                 {
                     maxX = ptsArr[j].X > maxX ? ptsArr[j].X : maxX;
                     minX = ptsArr[j].X < minX ? ptsArr[j].X : minX;
@@ -91,6 +95,6 @@ public class FaceLandmark : MonoBehaviour
         float aspectX, aspectY;
         aspectX = objectRect.width / (float)width;
         aspectY = objectRect.height / (float)height;
-        aspect = aspectX>aspectY ? aspectY : aspectX;
+        aspect = aspectX > aspectY ? aspectY : aspectX;
     }
 }
