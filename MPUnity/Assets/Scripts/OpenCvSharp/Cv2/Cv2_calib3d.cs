@@ -12,6 +12,7 @@ namespace OpenCvSharp
     static partial class Cv2
     {
         #region Rodrigues
+
         /// <summary>
         /// converts rotation vector to rotation matrix or vice versa using Rodrigues transformation
         /// </summary>
@@ -54,6 +55,7 @@ namespace OpenCvSharp
                 jacobian = jacobianM.ToRectangularArray();
             }
         }
+
         /// <summary>
         /// converts rotation vector to rotation matrix using Rodrigues transformation
         /// </summary>
@@ -87,6 +89,7 @@ namespace OpenCvSharp
                 jacobian = jacobianM.ToRectangularArray();
             }
         }
+
         /// <summary>
         /// converts rotation matrix to rotation vector using Rodrigues transformation
         /// </summary>
@@ -97,8 +100,11 @@ namespace OpenCvSharp
             double[,] jacobian;
             Rodrigues(matrix, out vector, out jacobian);
         }
-        #endregion
+
+        #endregion Rodrigues
+
         #region FindHomography
+
         /// <summary>
         /// computes the best-fit perspective transformation mapping srcPoints to dstPoints.
         /// </summary>
@@ -126,6 +132,7 @@ namespace OpenCvSharp
                 mask.Fix();
             return new Mat(mat);
         }
+
         /// <summary>
         /// computes the best-fit perspective transformation mapping srcPoints to dstPoints.
         /// </summary>
@@ -154,8 +161,11 @@ namespace OpenCvSharp
                 mask.Fix();
             return new Mat(mat);
         }
-        #endregion
+
+        #endregion FindHomography
+
         #region RQDecomp3x3
+
         /// <summary>
         /// Computes RQ decomposition of 3x3 matrix
         /// </summary>
@@ -202,6 +212,7 @@ namespace OpenCvSharp
             double[,] qx, qy, qz;
             return RQDecomp3x3(src, out mtxR, out mtxQ, out qx, out qy, out qz);
         }
+
         /// <summary>
         /// Computes RQ decomposition of 3x3 matrix
         /// </summary>
@@ -239,8 +250,11 @@ namespace OpenCvSharp
                 return ret;
             }
         }
-        #endregion
+
+        #endregion RQDecomp3x3
+
         #region DecomposeProjectionMatrix
+
         /// <summary>
         /// Decomposes the projection matrix into camera matrix and the rotation martix and the translation vector
         /// </summary>
@@ -340,6 +354,7 @@ namespace OpenCvSharp
                 eulerAngles = eulerAnglesM.ToArray();
             }
         }
+
         /// <summary>
         /// Decomposes the projection matrix into camera matrix and the rotation martix and the translation vector
         /// </summary>
@@ -357,7 +372,9 @@ namespace OpenCvSharp
             DecomposeProjectionMatrix(projMatrix, out cameraMatrix, out rotMatrix, out transVect,
                                       out rotMatrixX, out rotMatrixY, out rotMatrixZ, out eulerAngles);
         }
-        #endregion
+
+        #endregion DecomposeProjectionMatrix
+
         #region MatMulDeriv
 
         /// <summary>
@@ -387,8 +404,11 @@ namespace OpenCvSharp
             dABdA.Fix();
             dABdB.Fix();
         }
-        #endregion
+
+        #endregion MatMulDeriv
+
         #region ComposeRT
+
         /// <summary>
         /// composes 2 [R|t] transformations together. Also computes the derivatives of the result w.r.t the arguments
         /// </summary>
@@ -522,30 +542,32 @@ namespace OpenCvSharp
                       out dt3dr1, out dt3dt1, out dt3dr2, out dt3dt2);
         }
 
-        #endregion
+        #endregion ComposeRT
+
         #region ProjectPoints
+
         /// <summary>
-        /// projects points from the model coordinate space to the image coordinates. 
-        /// Also computes derivatives of the image coordinates w.r.t the intrinsic 
+        /// projects points from the model coordinate space to the image coordinates.
+        /// Also computes derivatives of the image coordinates w.r.t the intrinsic
         /// and extrinsic camera parameters
         /// </summary>
-        /// <param name="objectPoints">Array of object points, 3xN/Nx3 1-channel or 
+        /// <param name="objectPoints">Array of object points, 3xN/Nx3 1-channel or
         /// 1xN/Nx1 3-channel, where N is the number of points in the view.</param>
         /// <param name="rvec">Rotation vector (3x1).</param>
         /// <param name="tvec">Translation vector (3x1).</param>
         /// <param name="cameraMatrix">Camera matrix (3x3)</param>
-        /// <param name="distCoeffs">Input vector of distortion coefficients 
-        /// (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements. 
+        /// <param name="distCoeffs">Input vector of distortion coefficients
+        /// (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements.
         /// If the vector is null, the zero distortion coefficients are assumed.</param>
-        /// <param name="imagePoints">Output array of image points, 2xN/Nx2 1-channel 
+        /// <param name="imagePoints">Output array of image points, 2xN/Nx2 1-channel
         /// or 1xN/Nx1 2-channel</param>
-        /// <param name="jacobian">Optional output 2Nx(10 + numDistCoeffs) jacobian matrix 
-        /// of derivatives of image points with respect to components of the rotation vector, 
-        /// translation vector, focal lengths, coordinates of the principal point and 
-        /// the distortion coefficients. In the old interface different components of 
+        /// <param name="jacobian">Optional output 2Nx(10 + numDistCoeffs) jacobian matrix
+        /// of derivatives of image points with respect to components of the rotation vector,
+        /// translation vector, focal lengths, coordinates of the principal point and
+        /// the distortion coefficients. In the old interface different components of
         /// the jacobian are returned via different output parameters.</param>
-        /// <param name="aspectRatio">Optional “fixed aspect ratio” parameter. 
-        /// If the parameter is not 0, the function assumes that the aspect ratio (fx/fy) 
+        /// <param name="aspectRatio">Optional “fixed aspect ratio” parameter.
+        /// If the parameter is not 0, the function assumes that the aspect ratio (fx/fy)
         /// is fixed and correspondingly adjusts the jacobian matrix.</param>
         public static void ProjectPoints(InputArray objectPoints,
                                          InputArray rvec, InputArray tvec,
@@ -574,28 +596,29 @@ namespace OpenCvSharp
                 rvec.CvPtr, tvec.CvPtr, cameraMatrix.CvPtr, ToPtr(distCoeffs),
                 imagePoints.CvPtr, ToPtr(jacobian), aspectRatio);
         }
+
         /// <summary>
-        /// projects points from the model coordinate space to the image coordinates. 
-        /// Also computes derivatives of the image coordinates w.r.t the intrinsic 
+        /// projects points from the model coordinate space to the image coordinates.
+        /// Also computes derivatives of the image coordinates w.r.t the intrinsic
         /// and extrinsic camera parameters
         /// </summary>
-        /// <param name="objectPoints">Array of object points, 3xN/Nx3 1-channel or 
+        /// <param name="objectPoints">Array of object points, 3xN/Nx3 1-channel or
         /// 1xN/Nx1 3-channel, where N is the number of points in the view.</param>
         /// <param name="rvec">Rotation vector (3x1).</param>
         /// <param name="tvec">Translation vector (3x1).</param>
         /// <param name="cameraMatrix">Camera matrix (3x3)</param>
-        /// <param name="distCoeffs">Input vector of distortion coefficients 
-        /// (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements. 
+        /// <param name="distCoeffs">Input vector of distortion coefficients
+        /// (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements.
         /// If the vector is null, the zero distortion coefficients are assumed.</param>
-        /// <param name="imagePoints">Output array of image points, 2xN/Nx2 1-channel 
+        /// <param name="imagePoints">Output array of image points, 2xN/Nx2 1-channel
         /// or 1xN/Nx1 2-channel</param>
-        /// <param name="jacobian">Optional output 2Nx(10 + numDistCoeffs) jacobian matrix 
-        /// of derivatives of image points with respect to components of the rotation vector, 
-        /// translation vector, focal lengths, coordinates of the principal point and 
-        /// the distortion coefficients. In the old interface different components of 
+        /// <param name="jacobian">Optional output 2Nx(10 + numDistCoeffs) jacobian matrix
+        /// of derivatives of image points with respect to components of the rotation vector,
+        /// translation vector, focal lengths, coordinates of the principal point and
+        /// the distortion coefficients. In the old interface different components of
         /// the jacobian are returned via different output parameters.</param>
-        /// <param name="aspectRatio">Optional “fixed aspect ratio” parameter. 
-        /// If the parameter is not 0, the function assumes that the aspect ratio (fx/fy) 
+        /// <param name="aspectRatio">Optional “fixed aspect ratio” parameter.
+        /// If the parameter is not 0, the function assumes that the aspect ratio (fx/fy)
         /// is fixed and correspondingly adjusts the jacobian matrix.</param>
         public static void ProjectPoints(IEnumerable<Point3f> objectPoints,
                                          double[] rvec, double[] tvec,
@@ -639,23 +662,25 @@ namespace OpenCvSharp
                 jacobian = jacobianM.ToRectangularArray();
             }
         }
-        #endregion
+
+        #endregion ProjectPoints
+
         #region SolvePnP
 
         /// <summary>
         /// Finds an object pose from 3D-2D point correspondences.
         /// </summary>
-        /// <param name="objectPoints"> Array of object points in the object coordinate space, 3xN/Nx3 1-channel or 1xN/Nx1 3-channel, 
+        /// <param name="objectPoints"> Array of object points in the object coordinate space, 3xN/Nx3 1-channel or 1xN/Nx1 3-channel,
         /// where N is the number of points. vector&lt;Point3f&gt; can be also passed here.</param>
-        /// <param name="imagePoints">Array of corresponding image points, 2xN/Nx2 1-channel or 1xN/Nx1 2-channel, 
+        /// <param name="imagePoints">Array of corresponding image points, 2xN/Nx2 1-channel or 1xN/Nx1 2-channel,
         /// where N is the number of points. vector&lt;Point2f&gt; can be also passed here.</param>
         /// <param name="cameraMatrix">Input camera matrix</param>
-        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements. 
+        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements.
         /// If the vector is null, the zero distortion coefficients are assumed.</param>
-        /// <param name="rvec">Output rotation vector that, together with tvec , brings points from the model coordinate system to the 
+        /// <param name="rvec">Output rotation vector that, together with tvec , brings points from the model coordinate system to the
         /// camera coordinate system.</param>
         /// <param name="tvec">Output translation vector.</param>
-        /// <param name="useExtrinsicGuess">If true, the function uses the provided rvec and tvec values as initial approximations of 
+        /// <param name="useExtrinsicGuess">If true, the function uses the provided rvec and tvec values as initial approximations of
         /// the rotation and translation vectors, respectively, and further optimizes them.</param>
         /// <param name="flags">Method for solving a PnP problem:</param>
         public static void SolvePnP(
@@ -694,17 +719,17 @@ namespace OpenCvSharp
         /// <summary>
         /// Finds an object pose from 3D-2D point correspondences.
         /// </summary>
-        /// <param name="objectPoints"> Array of object points in the object coordinate space, 3xN/Nx3 1-channel or 1xN/Nx1 3-channel, 
+        /// <param name="objectPoints"> Array of object points in the object coordinate space, 3xN/Nx3 1-channel or 1xN/Nx1 3-channel,
         /// where N is the number of points. vector&lt;Point3f&gt; can be also passed here.</param>
-        /// <param name="imagePoints">Array of corresponding image points, 2xN/Nx2 1-channel or 1xN/Nx1 2-channel, 
+        /// <param name="imagePoints">Array of corresponding image points, 2xN/Nx2 1-channel or 1xN/Nx1 2-channel,
         /// where N is the number of points. vector&lt;Point2f&gt; can be also passed here.</param>
         /// <param name="cameraMatrix">Input camera matrix</param>
-        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements. 
+        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements.
         /// If the vector is null, the zero distortion coefficients are assumed.</param>
-        /// <param name="rvec">Output rotation vector that, together with tvec , brings points from the model coordinate system to the 
+        /// <param name="rvec">Output rotation vector that, together with tvec , brings points from the model coordinate system to the
         /// camera coordinate system.</param>
         /// <param name="tvec">Output translation vector.</param>
-        /// <param name="useExtrinsicGuess">If true, the function uses the provided rvec and tvec values as initial approximations of 
+        /// <param name="useExtrinsicGuess">If true, the function uses the provided rvec and tvec values as initial approximations of
         /// the rotation and translation vectors, respectively, and further optimizes them.</param>
         /// <param name="flags">Method for solving a PnP problem:</param>
         public static void SolvePnP(
@@ -732,36 +757,39 @@ namespace OpenCvSharp
             rvec = new double[3];
             tvec = new double[3];
 
-			Mat matCamera = new Mat(new Size(3, 3), MatType.CV_64FC1);
-			for (int i = 0; i < 3; ++i)
-				for (int j = 0; j < 3; ++j)
-					matCamera.Set<double>(i, j, cameraMatrix[i, j]);
+            Mat matCamera = new Mat(new Size(3, 3), MatType.CV_64FC1);
+            for (int i = 0; i < 3; ++i)
+                for (int j = 0; j < 3; ++j)
+                    matCamera.Set<double>(i, j, cameraMatrix[i, j]);
 
-			NativeMethods.calib3d_solvePnP_vector(
+            NativeMethods.calib3d_solvePnP_vector(
                     objectPointsArray, objectPointsArray.Length,
                     imagePointsArray, imagePointsArray.Length,
                     matCamera.CvPtr, distCoeffsArray, distCoeffsLength,
                     rvec, tvec, useExtrinsicGuess ? 1 : 0, (int)flags);
         }
-        #endregion
+
+        #endregion SolvePnP
+
         #region SolvePnPRansac
+
         /// <summary>
         /// computes the camera pose from a few 3D points and the corresponding projections. The outliers are possible.
         /// </summary>
-        /// <param name="objectPoints">Array of object points in the object coordinate space, 3xN/Nx3 1-channel or 1xN/Nx1 3-channel, 
+        /// <param name="objectPoints">Array of object points in the object coordinate space, 3xN/Nx3 1-channel or 1xN/Nx1 3-channel,
         /// where N is the number of points. List&lt;Point3f&gt; can be also passed here.</param>
-        /// <param name="imagePoints">Array of corresponding image points, 2xN/Nx2 1-channel or 1xN/Nx1 2-channel, where N is the number of points. 
+        /// <param name="imagePoints">Array of corresponding image points, 2xN/Nx2 1-channel or 1xN/Nx1 2-channel, where N is the number of points.
         /// List&lt;Point2f&gt; can be also passed here.</param>
         /// <param name="cameraMatrix">Input 3x3 camera matrix</param>
-        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements. 
+        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements.
         /// If the vector is null, the zero distortion coefficients are assumed.</param>
-        /// <param name="rvec">Output rotation vector that, together with tvec , brings points from the model coordinate system 
+        /// <param name="rvec">Output rotation vector that, together with tvec , brings points from the model coordinate system
         /// to the camera coordinate system.</param>
         /// <param name="tvec">Output translation vector.</param>
-        /// <param name="useExtrinsicGuess">If true, the function uses the provided rvec and tvec values as initial approximations 
+        /// <param name="useExtrinsicGuess">If true, the function uses the provided rvec and tvec values as initial approximations
         /// of the rotation and translation vectors, respectively, and further optimizes them.</param>
         /// <param name="iterationsCount">Number of iterations.</param>
-        /// <param name="reprojectionError">Inlier threshold value used by the RANSAC procedure. 
+        /// <param name="reprojectionError">Inlier threshold value used by the RANSAC procedure.
         /// The parameter value is the maximum allowed distance between the observed and computed point projections to consider it an inlier.</param>
         /// <param name="confidence">The probability that the algorithm produces a useful result.</param>
         /// <param name="inliers">Output vector that contains indices of inliers in objectPoints and imagePoints .</param>
@@ -805,22 +833,23 @@ namespace OpenCvSharp
 
             rvec.Fix();
             tvec.Fix();
-			if (inliers != null) {
-				inliers.Fix ();
-			}
+            if (inliers != null)
+            {
+                inliers.Fix();
+            }
         }
 
         /// <summary>
         /// computes the camera pose from a few 3D points and the corresponding projections. The outliers are possible.
         /// </summary>
-        /// <param name="objectPoints">Array of object points in the object coordinate space, 3xN/Nx3 1-channel or 1xN/Nx1 3-channel, 
+        /// <param name="objectPoints">Array of object points in the object coordinate space, 3xN/Nx3 1-channel or 1xN/Nx1 3-channel,
         /// where N is the number of points. List&lt;Point3f&gt; can be also passed here.</param>
-        /// <param name="imagePoints">Array of corresponding image points, 2xN/Nx2 1-channel or 1xN/Nx1 2-channel, where N is the number of points. 
+        /// <param name="imagePoints">Array of corresponding image points, 2xN/Nx2 1-channel or 1xN/Nx1 2-channel, where N is the number of points.
         /// List&lt;Point2f&gt; can be also passed here.</param>
         /// <param name="cameraMatrix">Input 3x3 camera matrix</param>
-        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements. 
+        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements.
         /// If the vector is null, the zero distortion coefficients are assumed.</param>
-        /// <param name="rvec">Output rotation vector that, together with tvec , brings points from the model coordinate system 
+        /// <param name="rvec">Output rotation vector that, together with tvec , brings points from the model coordinate system
         /// to the camera coordinate system.</param>
         /// <param name="tvec">Output translation vector.</param>
         public static void SolvePnPRansac(
@@ -837,20 +866,20 @@ namespace OpenCvSharp
         /// <summary>
         /// computes the camera pose from a few 3D points and the corresponding projections. The outliers are possible.
         /// </summary>
-        /// <param name="objectPoints">Array of object points in the object coordinate space, 3xN/Nx3 1-channel or 1xN/Nx1 3-channel, 
+        /// <param name="objectPoints">Array of object points in the object coordinate space, 3xN/Nx3 1-channel or 1xN/Nx1 3-channel,
         /// where N is the number of points. List&lt;Point3f&gt; can be also passed here.</param>
-        /// <param name="imagePoints">Array of corresponding image points, 2xN/Nx2 1-channel or 1xN/Nx1 2-channel, where N is the number of points. 
+        /// <param name="imagePoints">Array of corresponding image points, 2xN/Nx2 1-channel or 1xN/Nx1 2-channel, where N is the number of points.
         /// List&lt;Point2f&gt; can be also passed here.</param>
         /// <param name="cameraMatrix">Input 3x3 camera matrix</param>
-        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements. 
+        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements.
         /// If the vector is null, the zero distortion coefficients are assumed.</param>
-        /// <param name="rvec">Output rotation vector that, together with tvec , brings points from the model coordinate system 
+        /// <param name="rvec">Output rotation vector that, together with tvec , brings points from the model coordinate system
         /// to the camera coordinate system.</param>
         /// <param name="tvec">Output translation vector.</param>
-        /// <param name="useExtrinsicGuess">If true, the function uses the provided rvec and tvec values as initial approximations 
+        /// <param name="useExtrinsicGuess">If true, the function uses the provided rvec and tvec values as initial approximations
         /// of the rotation and translation vectors, respectively, and further optimizes them.</param>
         /// <param name="iterationsCount">Number of iterations.</param>
-        /// <param name="reprojectionError">Inlier threshold value used by the RANSAC procedure. 
+        /// <param name="reprojectionError">Inlier threshold value used by the RANSAC procedure.
         /// The parameter value is the maximum allowed distance between the observed and computed point projections to consider it an inlier.</param>
         /// <param name="confidence">The probability that the algorithm produces a useful result.</param>
         /// <param name="inliers">Output vector that contains indices of inliers in objectPoints and imagePoints .</param>
@@ -885,12 +914,12 @@ namespace OpenCvSharp
             rvec = new double[3];
             tvec = new double[3];
 
-			Mat matCamera = new Mat(new Size(3, 3), MatType.CV_64FC1);
-			for (int i = 0; i < 3; ++i)
-				for (int j = 0; j < 3; ++j)
-					matCamera.Set<double>(i, j, cameraMatrix[i, j]);
+            Mat matCamera = new Mat(new Size(3, 3), MatType.CV_64FC1);
+            for (int i = 0; i < 3; ++i)
+                for (int j = 0; j < 3; ++j)
+                    matCamera.Set<double>(i, j, cameraMatrix[i, j]);
 
-			using (var inliersVec = new VectorOfInt32())
+            using (var inliersVec = new VectorOfInt32())
             {
                 NativeMethods.calib3d_solvePnPRansac_vector(
                     objectPointsArray, objectPointsArray.Length,
@@ -901,8 +930,11 @@ namespace OpenCvSharp
                 inliers = inliersVec.ToArray();
             }
         }
-        #endregion
+
+        #endregion SolvePnPRansac
+
         #region InitCameraMatrix2D
+
         /// <summary>
         /// initializes camera matrix from a few 3D points and the corresponding projections.
         /// </summary>
@@ -929,6 +961,7 @@ namespace OpenCvSharp
                 imagePointsPtrs, imagePointsPtrs.Length, imageSize, aspectRatio);
             return new Mat(matPtr);
         }
+
         /// <summary>
         /// initializes camera matrix from a few 3D points and the corresponding projections.
         /// </summary>
@@ -958,17 +991,20 @@ namespace OpenCvSharp
                 return new Mat(matPtr);
             }
         }
-        #endregion
+
+        #endregion InitCameraMatrix2D
+
         #region FindChessboardCorners
+
         /// <summary>
         /// Finds the positions of internal corners of the chessboard.
         /// </summary>
         /// <param name="image">Source chessboard view. It must be an 8-bit grayscale or color image.</param>
-        /// <param name="patternSize">Number of inner corners per a chessboard row and column 
+        /// <param name="patternSize">Number of inner corners per a chessboard row and column
         /// ( patternSize = Size(points_per_row,points_per_colum) = Size(columns, rows) ).</param>
         /// <param name="corners">Output array of detected corners.</param>
         /// <param name="flags">Various operation flags that can be zero or a combination of the ChessboardFlag values</param>
-        /// <returns>The function returns true if all of the corners are found and they are placed in a certain order (row by row, left to right in every row). 
+        /// <returns>The function returns true if all of the corners are found and they are placed in a certain order (row by row, left to right in every row).
         /// Otherwise, if the function fails to find all the corners or reorder them, it returns false.</returns>
         public static bool FindChessboardCorners(
             InputArray image,
@@ -988,15 +1024,16 @@ namespace OpenCvSharp
             corners.Fix();
             return ret != 0;
         }
+
         /// <summary>
         /// Finds the positions of internal corners of the chessboard.
         /// </summary>
         /// <param name="image">Source chessboard view. It must be an 8-bit grayscale or color image.</param>
-        /// <param name="patternSize">Number of inner corners per a chessboard row and column 
+        /// <param name="patternSize">Number of inner corners per a chessboard row and column
         /// ( patternSize = Size(points_per_row,points_per_colum) = Size(columns, rows) ).</param>
         /// <param name="corners">Output array of detected corners.</param>
         /// <param name="flags">Various operation flags that can be zero or a combination of the ChessboardFlag values</param>
-        /// <returns>The function returns true if all of the corners are found and they are placed in a certain order (row by row, left to right in every row). 
+        /// <returns>The function returns true if all of the corners are found and they are placed in a certain order (row by row, left to right in every row).
         /// Otherwise, if the function fails to find all the corners or reorder them, it returns false.</returns>
         public static bool FindChessboardCorners(
             InputArray image,
@@ -1016,8 +1053,11 @@ namespace OpenCvSharp
                 return ret != 0;
             }
         }
-        #endregion
+
+        #endregion FindChessboardCorners
+
         #region Find4QuadCornerSubpix
+
         /// <summary>
         /// finds subpixel-accurate positions of the chessboard corners
         /// </summary>
@@ -1039,6 +1079,7 @@ namespace OpenCvSharp
             corners.Fix();
             return ret != 0;
         }
+
         /// <summary>
         /// finds subpixel-accurate positions of the chessboard corners
         /// </summary>
@@ -1068,8 +1109,11 @@ namespace OpenCvSharp
                 return ret != 0;
             }
         }
-        #endregion
+
+        #endregion Find4QuadCornerSubpix
+
         #region DrawChessboardCorners
+
         /// <summary>
         /// Renders the detected chessboard corners.
         /// </summary>
@@ -1091,6 +1135,7 @@ namespace OpenCvSharp
                 image.CvPtr, patternSize, corners.CvPtr, patternWasFound ? 1 : 0);
             image.Fix();
         }
+
         /// <summary>
         /// Renders the detected chessboard corners.
         /// </summary>
@@ -1113,8 +1158,11 @@ namespace OpenCvSharp
                 patternWasFound ? 1 : 0);
             image.Fix();
         }
-        #endregion
+
+        #endregion DrawChessboardCorners
+
         #region FindCirclesGrid
+
         /// <summary>
         /// Finds centers in the grid of circles.
         /// </summary>
@@ -1143,6 +1191,7 @@ namespace OpenCvSharp
             centers.Fix();
             return ret != 0;
         }
+
         /// <summary>
         /// Finds centers in the grid of circles.
         /// </summary>
@@ -1171,27 +1220,30 @@ namespace OpenCvSharp
                 return ret != 0;
             }
         }
-        #endregion
+
+        #endregion FindCirclesGrid
+
         #region CalibrateCamera
+
         /// <summary>
         /// finds intrinsic and extrinsic camera parameters from several fews of a known calibration pattern.
         /// </summary>
-        /// <param name="objectPoints">In the new interface it is a vector of vectors of calibration pattern points in the calibration pattern coordinate space. 
-        /// The outer vector contains as many elements as the number of the pattern views. If the same calibration pattern is shown in each view and 
-        /// it is fully visible, all the vectors will be the same. Although, it is possible to use partially occluded patterns, or even different patterns 
-        /// in different views. Then, the vectors will be different. The points are 3D, but since they are in a pattern coordinate system, then, 
+        /// <param name="objectPoints">In the new interface it is a vector of vectors of calibration pattern points in the calibration pattern coordinate space.
+        /// The outer vector contains as many elements as the number of the pattern views. If the same calibration pattern is shown in each view and
+        /// it is fully visible, all the vectors will be the same. Although, it is possible to use partially occluded patterns, or even different patterns
+        /// in different views. Then, the vectors will be different. The points are 3D, but since they are in a pattern coordinate system, then,
         /// if the rig is planar, it may make sense to put the model to a XY coordinate plane so that Z-coordinate of each input object point is 0.
         /// In the old interface all the vectors of object points from different views are concatenated together.</param>
-        /// <param name="imagePoints">In the new interface it is a vector of vectors of the projections of calibration pattern points. 
+        /// <param name="imagePoints">In the new interface it is a vector of vectors of the projections of calibration pattern points.
         /// imagePoints.Count() and objectPoints.Count() and imagePoints[i].Count() must be equal to objectPoints[i].Count() for each i.</param>
         /// <param name="imageSize">Size of the image used only to initialize the intrinsic camera matrix.</param>
-        /// <param name="cameraMatrix">Output 3x3 floating-point camera matrix. 
-        /// If CV_CALIB_USE_INTRINSIC_GUESS and/or CV_CALIB_FIX_ASPECT_RATIO are specified, some or all of fx, fy, cx, cy must be 
+        /// <param name="cameraMatrix">Output 3x3 floating-point camera matrix.
+        /// If CV_CALIB_USE_INTRINSIC_GUESS and/or CV_CALIB_FIX_ASPECT_RATIO are specified, some or all of fx, fy, cx, cy must be
         /// initialized before calling the function.</param>
         /// <param name="distCoeffs">Output vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements.</param>
-        /// <param name="rvecs">Output vector of rotation vectors (see Rodrigues() ) estimated for each pattern view. That is, each k-th rotation vector 
-        /// together with the corresponding k-th translation vector (see the next output parameter description) brings the calibration pattern 
-        /// from the model coordinate space (in which object points are specified) to the world coordinate space, that is, a real position of the 
+        /// <param name="rvecs">Output vector of rotation vectors (see Rodrigues() ) estimated for each pattern view. That is, each k-th rotation vector
+        /// together with the corresponding k-th translation vector (see the next output parameter description) brings the calibration pattern
+        /// from the model coordinate space (in which object points are specified) to the world coordinate space, that is, a real position of the
         /// calibration pattern in the k-th pattern view (k=0.. M -1)</param>
         /// <param name="tvecs">Output vector of translation vectors estimated for each pattern view.</param>
         /// <param name="flags">Different flags that may be zero or a combination of the CalibrationFlag values</param>
@@ -1246,22 +1298,22 @@ namespace OpenCvSharp
         /// <summary>
         /// finds intrinsic and extrinsic camera parameters from several fews of a known calibration pattern.
         /// </summary>
-        /// <param name="objectPoints">In the new interface it is a vector of vectors of calibration pattern points in the calibration pattern coordinate space. 
-        /// The outer vector contains as many elements as the number of the pattern views. If the same calibration pattern is shown in each view and 
-        /// it is fully visible, all the vectors will be the same. Although, it is possible to use partially occluded patterns, or even different patterns 
-        /// in different views. Then, the vectors will be different. The points are 3D, but since they are in a pattern coordinate system, then, 
+        /// <param name="objectPoints">In the new interface it is a vector of vectors of calibration pattern points in the calibration pattern coordinate space.
+        /// The outer vector contains as many elements as the number of the pattern views. If the same calibration pattern is shown in each view and
+        /// it is fully visible, all the vectors will be the same. Although, it is possible to use partially occluded patterns, or even different patterns
+        /// in different views. Then, the vectors will be different. The points are 3D, but since they are in a pattern coordinate system, then,
         /// if the rig is planar, it may make sense to put the model to a XY coordinate plane so that Z-coordinate of each input object point is 0.
         /// In the old interface all the vectors of object points from different views are concatenated together.</param>
-        /// <param name="imagePoints">In the new interface it is a vector of vectors of the projections of calibration pattern points. 
+        /// <param name="imagePoints">In the new interface it is a vector of vectors of the projections of calibration pattern points.
         /// imagePoints.Count() and objectPoints.Count() and imagePoints[i].Count() must be equal to objectPoints[i].Count() for each i.</param>
         /// <param name="imageSize">Size of the image used only to initialize the intrinsic camera matrix.</param>
-        /// <param name="cameraMatrix">Output 3x3 floating-point camera matrix. 
-        /// If CV_CALIB_USE_INTRINSIC_GUESS and/or CV_CALIB_FIX_ASPECT_RATIO are specified, some or all of fx, fy, cx, cy must be 
+        /// <param name="cameraMatrix">Output 3x3 floating-point camera matrix.
+        /// If CV_CALIB_USE_INTRINSIC_GUESS and/or CV_CALIB_FIX_ASPECT_RATIO are specified, some or all of fx, fy, cx, cy must be
         /// initialized before calling the function.</param>
         /// <param name="distCoeffs">Output vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements.</param>
-        /// <param name="rvecs">Output vector of rotation vectors (see Rodrigues() ) estimated for each pattern view. That is, each k-th rotation vector 
-        /// together with the corresponding k-th translation vector (see the next output parameter description) brings the calibration pattern 
-        /// from the model coordinate space (in which object points are specified) to the world coordinate space, that is, a real position of the 
+        /// <param name="rvecs">Output vector of rotation vectors (see Rodrigues() ) estimated for each pattern view. That is, each k-th rotation vector
+        /// together with the corresponding k-th translation vector (see the next output parameter description) brings the calibration pattern
+        /// from the model coordinate space (in which object points are specified) to the world coordinate space, that is, a real position of the
         /// calibration pattern in the k-th pattern view (k=0.. M -1)</param>
         /// <param name="tvecs">Output vector of translation vectors estimated for each pattern view.</param>
         /// <param name="flags">Different flags that may be zero or a combination of the CalibrationFlag values</param>
@@ -1307,8 +1359,11 @@ namespace OpenCvSharp
                 return ret;
             }
         }
-        #endregion
+
+        #endregion CalibrateCamera
+
         #region CalibrationMatrixValues
+
         /// <summary>
         /// computes several useful camera characteristics from the camera matrix, camera frame resolution and the physical sensor size.
         /// </summary>
@@ -1335,6 +1390,7 @@ namespace OpenCvSharp
                 imageSize, apertureWidth, apertureHeight, out fovx, out fovy, out focalLength,
                 out principalPoint, out aspectRatio);
         }
+
         /// <summary>
         /// computes several useful camera characteristics from the camera matrix, camera frame resolution and the physical sensor size.
         /// </summary>
@@ -1362,7 +1418,9 @@ namespace OpenCvSharp
                 imageSize, apertureWidth, apertureHeight, out fovx, out fovy, out focalLength,
                 out principalPoint, out aspectRatio);
         }
-        #endregion
+
+        #endregion CalibrationMatrixValues
+
         #region StereoCalibrate
 
         /// <summary>
@@ -1372,7 +1430,7 @@ namespace OpenCvSharp
         /// <param name="imagePoints1">Vector of vectors of the projections of the calibration pattern points, observed by the first camera.</param>
         /// <param name="imagePoints2">Vector of vectors of the projections of the calibration pattern points, observed by the second camera.</param>
         /// <param name="cameraMatrix1">Input/output first camera matrix</param>
-        /// <param name="distCoeffs1">Input/output vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements. 
+        /// <param name="distCoeffs1">Input/output vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements.
         /// The output vector length depends on the flags.</param>
         /// <param name="cameraMatrix2"> Input/output second camera matrix. The parameter is similar to cameraMatrix1 .</param>
         /// <param name="distCoeffs2">Input/output lens distortion coefficients for the second camera. The parameter is similar to distCoeffs1 .</param>
@@ -1456,7 +1514,7 @@ namespace OpenCvSharp
         /// <param name="imagePoints1">Vector of vectors of the projections of the calibration pattern points, observed by the first camera.</param>
         /// <param name="imagePoints2">Vector of vectors of the projections of the calibration pattern points, observed by the second camera.</param>
         /// <param name="cameraMatrix1">Input/output first camera matrix</param>
-        /// <param name="distCoeffs1">Input/output vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements. 
+        /// <param name="distCoeffs1">Input/output vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements.
         /// The output vector length depends on the flags.</param>
         /// <param name="cameraMatrix2"> Input/output second camera matrix. The parameter is similar to cameraMatrix1 .</param>
         /// <param name="distCoeffs2">Input/output lens distortion coefficients for the second camera. The parameter is similar to distCoeffs1 .</param>
@@ -1511,7 +1569,8 @@ namespace OpenCvSharp
             }
         }
 
-        #endregion
+        #endregion StereoCalibrate
+
         #region StereoRectify
 
         /// <summary>
@@ -1529,15 +1588,15 @@ namespace OpenCvSharp
         /// <param name="P1">Output 3x4 projection matrix in the new (rectified) coordinate systems for the first camera.</param>
         /// <param name="P2">Output 3x4 projection matrix in the new (rectified) coordinate systems for the second camera.</param>
         /// <param name="Q">Output 4x4 disparity-to-depth mapping matrix (see reprojectImageTo3D() ).</param>
-        /// <param name="flags">Operation flags that may be zero or CV_CALIB_ZERO_DISPARITY. 
-        /// If the flag is set, the function makes the principal points of each camera have the same pixel coordinates in the rectified views. 
+        /// <param name="flags">Operation flags that may be zero or CV_CALIB_ZERO_DISPARITY.
+        /// If the flag is set, the function makes the principal points of each camera have the same pixel coordinates in the rectified views.
         /// And if the flag is not set, the function may still shift the images in the horizontal or vertical direction (depending on the orientation of epipolar lines) to maximize the useful image area.</param>
-        /// <param name="alpha">Free scaling parameter. 
-        /// If it is -1 or absent, the function performs the default scaling. Otherwise, the parameter should be between 0 and 1. 
-        /// alpha=0 means that the rectified images are zoomed and shifted so that only valid pixels are visible (no black areas after rectification). 
-        /// alpha=1 means that the rectified image is decimated and shifted so that all the pixels from the original images from the cameras are retained 
+        /// <param name="alpha">Free scaling parameter.
+        /// If it is -1 or absent, the function performs the default scaling. Otherwise, the parameter should be between 0 and 1.
+        /// alpha=0 means that the rectified images are zoomed and shifted so that only valid pixels are visible (no black areas after rectification).
+        /// alpha=1 means that the rectified image is decimated and shifted so that all the pixels from the original images from the cameras are retained
         /// in the rectified images (no source image pixels are lost). Obviously, any intermediate value yields an intermediate result between those two extreme cases.</param>
-        /// <param name="newImageSize">New image resolution after rectification. The same size should be passed to initUndistortRectifyMap(). When (0,0) is passed (default), it is set to the original imageSize . 
+        /// <param name="newImageSize">New image resolution after rectification. The same size should be passed to initUndistortRectifyMap(). When (0,0) is passed (default), it is set to the original imageSize .
         /// Setting it to larger value can help you preserve details in the original image, especially when there is a big radial distortion.</param>
         public static void StereoRectify(InputArray cameraMatrix1, InputArray distCoeffs1,
                                          InputArray cameraMatrix2, InputArray distCoeffs2,
@@ -1554,6 +1613,7 @@ namespace OpenCvSharp
                 imageSize, R, T, R1, R2, P1, P2, Q, flags, alpha, newImageSize0,
                 out validPixROI1, out validPixROI2);
         }
+
         /// <summary>
         /// computes the rectification transformation for a stereo camera from its intrinsic and extrinsic parameters
         /// </summary>
@@ -1569,19 +1629,19 @@ namespace OpenCvSharp
         /// <param name="P1">Output 3x4 projection matrix in the new (rectified) coordinate systems for the first camera.</param>
         /// <param name="P2">Output 3x4 projection matrix in the new (rectified) coordinate systems for the second camera.</param>
         /// <param name="Q">Output 4x4 disparity-to-depth mapping matrix (see reprojectImageTo3D() ).</param>
-        /// <param name="flags">Operation flags that may be zero or CV_CALIB_ZERO_DISPARITY. 
-        /// If the flag is set, the function makes the principal points of each camera have the same pixel coordinates in the rectified views. 
+        /// <param name="flags">Operation flags that may be zero or CV_CALIB_ZERO_DISPARITY.
+        /// If the flag is set, the function makes the principal points of each camera have the same pixel coordinates in the rectified views.
         /// And if the flag is not set, the function may still shift the images in the horizontal or vertical direction (depending on the orientation of epipolar lines) to maximize the useful image area.</param>
-        /// <param name="alpha">Free scaling parameter. 
-        /// If it is -1 or absent, the function performs the default scaling. Otherwise, the parameter should be between 0 and 1. 
-        /// alpha=0 means that the rectified images are zoomed and shifted so that only valid pixels are visible (no black areas after rectification). 
-        /// alpha=1 means that the rectified image is decimated and shifted so that all the pixels from the original images from the cameras are retained 
+        /// <param name="alpha">Free scaling parameter.
+        /// If it is -1 or absent, the function performs the default scaling. Otherwise, the parameter should be between 0 and 1.
+        /// alpha=0 means that the rectified images are zoomed and shifted so that only valid pixels are visible (no black areas after rectification).
+        /// alpha=1 means that the rectified image is decimated and shifted so that all the pixels from the original images from the cameras are retained
         /// in the rectified images (no source image pixels are lost). Obviously, any intermediate value yields an intermediate result between those two extreme cases.</param>
-        /// <param name="newImageSize">New image resolution after rectification. The same size should be passed to initUndistortRectifyMap(). When (0,0) is passed (default), it is set to the original imageSize . 
+        /// <param name="newImageSize">New image resolution after rectification. The same size should be passed to initUndistortRectifyMap(). When (0,0) is passed (default), it is set to the original imageSize .
         /// Setting it to larger value can help you preserve details in the original image, especially when there is a big radial distortion.</param>
-        /// <param name="validPixROI1">Optional output rectangles inside the rectified images where all the pixels are valid. If alpha=0 , the ROIs cover the whole images. 
+        /// <param name="validPixROI1">Optional output rectangles inside the rectified images where all the pixels are valid. If alpha=0 , the ROIs cover the whole images.
         /// Otherwise, they are likely to be smaller.</param>
-        /// <param name="validPixROI2">Optional output rectangles inside the rectified images where all the pixels are valid. If alpha=0 , the ROIs cover the whole images. 
+        /// <param name="validPixROI2">Optional output rectangles inside the rectified images where all the pixels are valid. If alpha=0 , the ROIs cover the whole images.
         /// Otherwise, they are likely to be smaller.</param>
         public static void StereoRectify(InputArray cameraMatrix1, InputArray distCoeffs1,
                                          InputArray cameraMatrix2, InputArray distCoeffs2,
@@ -1640,7 +1700,6 @@ namespace OpenCvSharp
             Q.Fix();
         }
 
-
         /// <summary>
         /// computes the rectification transformation for a stereo camera from its intrinsic and extrinsic parameters
         /// </summary>
@@ -1656,15 +1715,15 @@ namespace OpenCvSharp
         /// <param name="P1">Output 3x4 projection matrix in the new (rectified) coordinate systems for the first camera.</param>
         /// <param name="P2">Output 3x4 projection matrix in the new (rectified) coordinate systems for the second camera.</param>
         /// <param name="Q">Output 4x4 disparity-to-depth mapping matrix (see reprojectImageTo3D() ).</param>
-        /// <param name="flags">Operation flags that may be zero or CV_CALIB_ZERO_DISPARITY. 
-        /// If the flag is set, the function makes the principal points of each camera have the same pixel coordinates in the rectified views. 
+        /// <param name="flags">Operation flags that may be zero or CV_CALIB_ZERO_DISPARITY.
+        /// If the flag is set, the function makes the principal points of each camera have the same pixel coordinates in the rectified views.
         /// And if the flag is not set, the function may still shift the images in the horizontal or vertical direction (depending on the orientation of epipolar lines) to maximize the useful image area.</param>
-        /// <param name="alpha">Free scaling parameter. 
-        /// If it is -1 or absent, the function performs the default scaling. Otherwise, the parameter should be between 0 and 1. 
-        /// alpha=0 means that the rectified images are zoomed and shifted so that only valid pixels are visible (no black areas after rectification). 
-        /// alpha=1 means that the rectified image is decimated and shifted so that all the pixels from the original images from the cameras are retained 
+        /// <param name="alpha">Free scaling parameter.
+        /// If it is -1 or absent, the function performs the default scaling. Otherwise, the parameter should be between 0 and 1.
+        /// alpha=0 means that the rectified images are zoomed and shifted so that only valid pixels are visible (no black areas after rectification).
+        /// alpha=1 means that the rectified image is decimated and shifted so that all the pixels from the original images from the cameras are retained
         /// in the rectified images (no source image pixels are lost). Obviously, any intermediate value yields an intermediate result between those two extreme cases.</param>
-        /// <param name="newImageSize">New image resolution after rectification. The same size should be passed to initUndistortRectifyMap(). When (0,0) is passed (default), it is set to the original imageSize . 
+        /// <param name="newImageSize">New image resolution after rectification. The same size should be passed to initUndistortRectifyMap(). When (0,0) is passed (default), it is set to the original imageSize .
         /// Setting it to larger value can help you preserve details in the original image, especially when there is a big radial distortion.</param>
         public static void StereoRectify(double[,] cameraMatrix1, double[] distCoeffs1,
                                          double[,] cameraMatrix2, double[] distCoeffs2,
@@ -1700,19 +1759,19 @@ namespace OpenCvSharp
         /// <param name="P1">Output 3x4 projection matrix in the new (rectified) coordinate systems for the first camera.</param>
         /// <param name="P2">Output 3x4 projection matrix in the new (rectified) coordinate systems for the second camera.</param>
         /// <param name="Q">Output 4x4 disparity-to-depth mapping matrix (see reprojectImageTo3D() ).</param>
-        /// <param name="flags">Operation flags that may be zero or CV_CALIB_ZERO_DISPARITY. 
-        /// If the flag is set, the function makes the principal points of each camera have the same pixel coordinates in the rectified views. 
+        /// <param name="flags">Operation flags that may be zero or CV_CALIB_ZERO_DISPARITY.
+        /// If the flag is set, the function makes the principal points of each camera have the same pixel coordinates in the rectified views.
         /// And if the flag is not set, the function may still shift the images in the horizontal or vertical direction (depending on the orientation of epipolar lines) to maximize the useful image area.</param>
-        /// <param name="alpha">Free scaling parameter. 
-        /// If it is -1 or absent, the function performs the default scaling. Otherwise, the parameter should be between 0 and 1. 
-        /// alpha=0 means that the rectified images are zoomed and shifted so that only valid pixels are visible (no black areas after rectification). 
-        /// alpha=1 means that the rectified image is decimated and shifted so that all the pixels from the original images from the cameras are retained 
+        /// <param name="alpha">Free scaling parameter.
+        /// If it is -1 or absent, the function performs the default scaling. Otherwise, the parameter should be between 0 and 1.
+        /// alpha=0 means that the rectified images are zoomed and shifted so that only valid pixels are visible (no black areas after rectification).
+        /// alpha=1 means that the rectified image is decimated and shifted so that all the pixels from the original images from the cameras are retained
         /// in the rectified images (no source image pixels are lost). Obviously, any intermediate value yields an intermediate result between those two extreme cases.</param>
-        /// <param name="newImageSize">New image resolution after rectification. The same size should be passed to initUndistortRectifyMap(). When (0,0) is passed (default), it is set to the original imageSize . 
+        /// <param name="newImageSize">New image resolution after rectification. The same size should be passed to initUndistortRectifyMap(). When (0,0) is passed (default), it is set to the original imageSize .
         /// Setting it to larger value can help you preserve details in the original image, especially when there is a big radial distortion.</param>
-        /// <param name="validPixROI1">Optional output rectangles inside the rectified images where all the pixels are valid. If alpha=0 , the ROIs cover the whole images. 
+        /// <param name="validPixROI1">Optional output rectangles inside the rectified images where all the pixels are valid. If alpha=0 , the ROIs cover the whole images.
         /// Otherwise, they are likely to be smaller.</param>
-        /// <param name="validPixROI2">Optional output rectangles inside the rectified images where all the pixels are valid. If alpha=0 , the ROIs cover the whole images. 
+        /// <param name="validPixROI2">Optional output rectangles inside the rectified images where all the pixels are valid. If alpha=0 , the ROIs cover the whole images.
         /// Otherwise, they are likely to be smaller.</param>
         public static void StereoRectify(double[,] cameraMatrix1, double[] distCoeffs1,
                                          double[,] cameraMatrix2, double[] distCoeffs2,
@@ -1749,24 +1808,24 @@ namespace OpenCvSharp
                     (int)flags, alpha, newImageSize, out validPixROI1, out validPixROI2);
         }
 
+        #endregion StereoRectify
 
-        #endregion
         #region StereoRectifyUncalibrated
 
         /// <summary>
         /// computes the rectification transformation for an uncalibrated stereo camera (zero distortion is assumed)
         /// </summary>
         /// <param name="points1">Array of feature points in the first image.</param>
-        /// <param name="points2">The corresponding points in the second image. 
+        /// <param name="points2">The corresponding points in the second image.
         /// The same formats as in findFundamentalMat() are supported.</param>
-        /// <param name="F">Input fundamental matrix. It can be computed from the same set 
+        /// <param name="F">Input fundamental matrix. It can be computed from the same set
         /// of point pairs using findFundamentalMat() .</param>
         /// <param name="imgSize">Size of the image.</param>
         /// <param name="H1">Output rectification homography matrix for the first image.</param>
         /// <param name="H2">Output rectification homography matrix for the second image.</param>
-        /// <param name="threshold">Optional threshold used to filter out the outliers. 
-        /// If the parameter is greater than zero, all the point pairs that do not comply 
-        /// with the epipolar geometry (that is, the points for which |points2[i]^T * F * points1[i]| > threshold ) 
+        /// <param name="threshold">Optional threshold used to filter out the outliers.
+        /// If the parameter is greater than zero, all the point pairs that do not comply
+        /// with the epipolar geometry (that is, the points for which |points2[i]^T * F * points1[i]| > threshold )
         /// are rejected prior to computing the homographies. Otherwise, all the points are considered inliers.</param>
         /// <returns></returns>
         public static bool StereoRectifyUncalibrated(InputArray points1, InputArray points2,
@@ -1801,16 +1860,16 @@ namespace OpenCvSharp
         /// computes the rectification transformation for an uncalibrated stereo camera (zero distortion is assumed)
         /// </summary>
         /// <param name="points1">Array of feature points in the first image.</param>
-        /// <param name="points2">The corresponding points in the second image. 
+        /// <param name="points2">The corresponding points in the second image.
         /// The same formats as in findFundamentalMat() are supported.</param>
-        /// <param name="F">Input fundamental matrix. It can be computed from the same set 
+        /// <param name="F">Input fundamental matrix. It can be computed from the same set
         /// of point pairs using findFundamentalMat() .</param>
         /// <param name="imgSize">Size of the image.</param>
         /// <param name="H1">Output rectification homography matrix for the first image.</param>
         /// <param name="H2">Output rectification homography matrix for the second image.</param>
-        /// <param name="threshold">Optional threshold used to filter out the outliers. 
-        /// If the parameter is greater than zero, all the point pairs that do not comply 
-        /// with the epipolar geometry (that is, the points for which |points2[i]^T * F * points1[i]| > threshold ) 
+        /// <param name="threshold">Optional threshold used to filter out the outliers.
+        /// If the parameter is greater than zero, all the point pairs that do not comply
+        /// with the epipolar geometry (that is, the points for which |points2[i]^T * F * points1[i]| > threshold )
         /// are rejected prior to computing the homographies. Otherwise, all the points are considered inliers.</param>
         /// <returns></returns>
         public static bool StereoRectifyUncalibrated(IEnumerable<Point2d> points1,
@@ -1842,8 +1901,10 @@ namespace OpenCvSharp
             return ret != 0;
         }
 
-        #endregion
+        #endregion StereoRectifyUncalibrated
+
         #region Rectify3Collinear
+
         /// <summary>
         /// computes the rectification transformations for 3-head camera, where all the heads are on the same line.
         /// </summary>
@@ -1959,22 +2020,24 @@ namespace OpenCvSharp
             Q.Fix();
             return ret;
         }
-        #endregion
+
+        #endregion Rectify3Collinear
+
         #region GetOptimalNewCameraMatrix
 
         /// <summary>
         /// Returns the new camera matrix based on the free scaling parameter.
         /// </summary>
         /// <param name="cameraMatrix">Input camera matrix.</param>
-        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements. 
+        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements.
         /// If the array is null, the zero distortion coefficients are assumed.</param>
         /// <param name="imageSize">Original image size.</param>
-        /// <param name="alpha">Free scaling parameter between 0 (when all the pixels in the undistorted image are valid) 
+        /// <param name="alpha">Free scaling parameter between 0 (when all the pixels in the undistorted image are valid)
         /// and 1 (when all the source image pixels are retained in the undistorted image). </param>
         /// <param name="newImgSize">Image size after rectification. By default,it is set to imageSize .</param>
         /// <param name="validPixROI">Optional output rectangle that outlines all-good-pixels region in the undistorted image. See roi1, roi2 description in stereoRectify() .</param>
-        /// <param name="centerPrincipalPoint">Optional flag that indicates whether in the new camera matrix the principal point 
-        /// should be at the image center or not. By default, the principal point is chosen to best fit a 
+        /// <param name="centerPrincipalPoint">Optional flag that indicates whether in the new camera matrix the principal point
+        /// should be at the image center or not. By default, the principal point is chosen to best fit a
         /// subset of the source image (determined by alpha) to the corrected image.</param>
         /// <returns>optimal new camera matrix</returns>
         public static Mat GetOptimalNewCameraMatrix(InputArray cameraMatrix, InputArray distCoeffs,
@@ -1990,19 +2053,20 @@ namespace OpenCvSharp
                 out validPixROI, centerPrincipalPoint ? 1 : 0);
             return new Mat(mat);
         }
+
         /// <summary>
         /// Returns the new camera matrix based on the free scaling parameter.
         /// </summary>
         /// <param name="cameraMatrix">Input camera matrix.</param>
-        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements. 
+        /// <param name="distCoeffs">Input vector of distortion coefficients (k_1, k_2, p_1, p_2[, k_3[, k_4, k_5, k_6]]) of 4, 5, or 8 elements.
         /// If the array is null, the zero distortion coefficients are assumed.</param>
         /// <param name="imageSize">Original image size.</param>
-        /// <param name="alpha">Free scaling parameter between 0 (when all the pixels in the undistorted image are valid) 
+        /// <param name="alpha">Free scaling parameter between 0 (when all the pixels in the undistorted image are valid)
         /// and 1 (when all the source image pixels are retained in the undistorted image). </param>
         /// <param name="newImgSize">Image size after rectification. By default,it is set to imageSize .</param>
         /// <param name="validPixROI">Optional output rectangle that outlines all-good-pixels region in the undistorted image. See roi1, roi2 description in stereoRectify() .</param>
-        /// <param name="centerPrincipalPoint">Optional flag that indicates whether in the new camera matrix the principal point 
-        /// should be at the image center or not. By default, the principal point is chosen to best fit a 
+        /// <param name="centerPrincipalPoint">Optional flag that indicates whether in the new camera matrix the principal point
+        /// should be at the image center or not. By default, the principal point is chosen to best fit a
         /// subset of the source image (determined by alpha) to the corrected image.</param>
         /// <returns>optimal new camera matrix</returns>
         public static double[,] GetOptimalNewCameraMatrix(double[,] cameraMatrix, double[] distCoeffs,
@@ -2020,8 +2084,11 @@ namespace OpenCvSharp
                 newCameraMatrix);
             return newCameraMatrix;
         }
-        #endregion
+
+        #endregion GetOptimalNewCameraMatrix
+
         #region ConvertPointsHomogeneous
+
         /// <summary>
         /// converts point coordinates from normal pixel coordinates to homogeneous coordinates ((x,y)->(x,y,1))
         /// </summary>
@@ -2038,6 +2105,7 @@ namespace OpenCvSharp
             NativeMethods.calib3d_convertPointsToHomogeneous_InputArray(src.CvPtr, dst.CvPtr);
             dst.Fix();
         }
+
         /// <summary>
         /// converts point coordinates from normal pixel coordinates to homogeneous coordinates ((x,y)->(x,y,1))
         /// </summary>
@@ -2053,6 +2121,7 @@ namespace OpenCvSharp
             NativeMethods.calib3d_convertPointsToHomogeneous_array1(srcA, dstA, srcA.Length);
             return dstA;
         }
+
         /// <summary>
         /// converts point coordinates from normal pixel coordinates to homogeneous coordinates ((x,y)->(x,y,1))
         /// </summary>
@@ -2085,6 +2154,7 @@ namespace OpenCvSharp
             NativeMethods.calib3d_convertPointsFromHomogeneous_InputArray(src.CvPtr, dst.CvPtr);
             dst.Fix();
         }
+
         /// <summary>
         /// converts point coordinates from homogeneous to normal pixel coordinates ((x,y,z)->(x/z, y/z))
         /// </summary>
@@ -2100,6 +2170,7 @@ namespace OpenCvSharp
             NativeMethods.calib3d_convertPointsFromHomogeneous_array1(srcA, dstA, srcA.Length);
             return dstA;
         }
+
         /// <summary>
         /// converts point coordinates from homogeneous to normal pixel coordinates ((x,y,z)->(x/z, y/z))
         /// </summary>
@@ -2132,22 +2203,25 @@ namespace OpenCvSharp
             NativeMethods.calib3d_convertPointsHomogeneous(src.CvPtr, dst.CvPtr);
             dst.Fix();
         }
-        #endregion
+
+        #endregion ConvertPointsHomogeneous
+
         #region FindFundamentalMat
+
         /// <summary>
         /// Calculates a fundamental matrix from the corresponding points in two images.
         /// </summary>
-        /// <param name="points1">Array of N points from the first image. 
+        /// <param name="points1">Array of N points from the first image.
         /// The point coordinates should be floating-point (single or double precision).</param>
         /// <param name="points2">Array of the second image points of the same size and format as points1 .</param>
         /// <param name="method">Method for computing a fundamental matrix.</param>
-        /// <param name="param1">Parameter used for RANSAC. 
-        /// It is the maximum distance from a point to an epipolar line in pixels, beyond which the point is 
-        /// considered an outlier and is not used for computing the final fundamental matrix. It can be set to 
+        /// <param name="param1">Parameter used for RANSAC.
+        /// It is the maximum distance from a point to an epipolar line in pixels, beyond which the point is
+        /// considered an outlier and is not used for computing the final fundamental matrix. It can be set to
         /// something like 1-3, depending on the accuracy of the point localization, image resolution, and the image noise.</param>
-        /// <param name="param2">Parameter used for the RANSAC or LMedS methods only. 
+        /// <param name="param2">Parameter used for the RANSAC or LMedS methods only.
         /// It specifies a desirable level of confidence (probability) that the estimated matrix is correct.</param>
-        /// <param name="mask">Output array of N elements, every element of which is set to 0 for outliers and 
+        /// <param name="mask">Output array of N elements, every element of which is set to 0 for outliers and
         /// to 1 for the other points. The array is computed only in the RANSAC and LMedS methods. For other methods, it is set to all 1’s.</param>
         /// <returns>fundamental matrix</returns>
         public static Mat FindFundamentalMat(
@@ -2170,20 +2244,21 @@ namespace OpenCvSharp
                 mask.Fix();
             return new Mat(mat);
         }
+
         /// <summary>
         /// Calculates a fundamental matrix from the corresponding points in two images.
         /// </summary>
-        /// <param name="points1">Array of N points from the first image. 
+        /// <param name="points1">Array of N points from the first image.
         /// The point coordinates should be floating-point (single or double precision).</param>
         /// <param name="points2">Array of the second image points of the same size and format as points1 .</param>
         /// <param name="method">Method for computing a fundamental matrix.</param>
-        /// <param name="param1">Parameter used for RANSAC. 
-        /// It is the maximum distance from a point to an epipolar line in pixels, beyond which the point is 
-        /// considered an outlier and is not used for computing the final fundamental matrix. It can be set to 
+        /// <param name="param1">Parameter used for RANSAC.
+        /// It is the maximum distance from a point to an epipolar line in pixels, beyond which the point is
+        /// considered an outlier and is not used for computing the final fundamental matrix. It can be set to
         /// something like 1-3, depending on the accuracy of the point localization, image resolution, and the image noise.</param>
-        /// <param name="param2">Parameter used for the RANSAC or LMedS methods only. 
+        /// <param name="param2">Parameter used for the RANSAC or LMedS methods only.
         /// It specifies a desirable level of confidence (probability) that the estimated matrix is correct.</param>
-        /// <param name="mask">Output array of N elements, every element of which is set to 0 for outliers and 
+        /// <param name="mask">Output array of N elements, every element of which is set to 0 for outliers and
         /// to 1 for the other points. The array is computed only in the RANSAC and LMedS methods. For other methods, it is set to all 1’s.</param>
         /// <returns>fundamental matrix</returns>
         public static Mat FindFundamentalMat(
@@ -2208,8 +2283,11 @@ namespace OpenCvSharp
                 mask.Fix();
             return new Mat(mat);
         }
-        #endregion
+
+        #endregion FindFundamentalMat
+
         #region ComputeCorrespondEpilines
+
         /// <summary>
         /// For points in an image of a stereo pair, computes the corresponding epilines in the other image.
         /// </summary>
@@ -2237,6 +2315,7 @@ namespace OpenCvSharp
                 points.CvPtr, whichImage, F.CvPtr, lines.CvPtr);
             lines.Fix();
         }
+
         /// <summary>
         /// For points in an image of a stereo pair, computes the corresponding epilines in the other image.
         /// </summary>
@@ -2264,6 +2343,7 @@ namespace OpenCvSharp
 
             return lines;
         }
+
         /// <summary>
         /// For points in an image of a stereo pair, computes the corresponding epilines in the other image.
         /// </summary>
@@ -2291,16 +2371,19 @@ namespace OpenCvSharp
 
             return lines;
         }
-        #endregion
+
+        #endregion ComputeCorrespondEpilines
+
         #region TriangulatePoints
+
         /// <summary>
         /// Reconstructs points by triangulation.
         /// </summary>
         /// <param name="projMatr1">3x4 projection matrix of the first camera.</param>
         /// <param name="projMatr2">3x4 projection matrix of the second camera.</param>
-        /// <param name="projPoints1">2xN array of feature points in the first image. In case of c++ version 
+        /// <param name="projPoints1">2xN array of feature points in the first image. In case of c++ version
         /// it can be also a vector of feature points or two-channel matrix of size 1xN or Nx1.</param>
-        /// <param name="projPoints2">2xN array of corresponding points in the second image. In case of c++ version 
+        /// <param name="projPoints2">2xN array of corresponding points in the second image. In case of c++ version
         /// it can be also a vector of feature points or two-channel matrix of size 1xN or Nx1.</param>
         /// <param name="points4D">4xN array of reconstructed points in homogeneous coordinates.</param>
         public static void TriangulatePoints(
@@ -2330,14 +2413,15 @@ namespace OpenCvSharp
 
             points4D.Fix();
         }
+
         /// <summary>
         /// Reconstructs points by triangulation.
         /// </summary>
         /// <param name="projMatr1">3x4 projection matrix of the first camera.</param>
         /// <param name="projMatr2">3x4 projection matrix of the second camera.</param>
-        /// <param name="projPoints1">2xN array of feature points in the first image. In case of c++ version 
+        /// <param name="projPoints1">2xN array of feature points in the first image. In case of c++ version
         /// it can be also a vector of feature points or two-channel matrix of size 1xN or Nx1.</param>
-        /// <param name="projPoints2">2xN array of corresponding points in the second image. In case of c++ version 
+        /// <param name="projPoints2">2xN array of corresponding points in the second image. In case of c++ version
         /// it can be also a vector of feature points or two-channel matrix of size 1xN or Nx1.</param>
         /// <returns>4xN array of reconstructed points in homogeneous coordinates.</returns>
         public static Vec4d[] TriangulatePoints(
@@ -2369,8 +2453,11 @@ namespace OpenCvSharp
 
             return points4D;
         }
-        #endregion
+
+        #endregion TriangulatePoints
+
         #region CorrectMatches
+
         /// <summary>
         /// Refines coordinates of corresponding points.
         /// </summary>
@@ -2406,6 +2493,7 @@ namespace OpenCvSharp
             newPoints1.Fix();
             newPoints2.Fix();
         }
+
         /// <summary>
         /// Refines coordinates of corresponding points.
         /// </summary>
@@ -2435,7 +2523,8 @@ namespace OpenCvSharp
                 points2Array, points2Array.Length,
                 newPoints1, newPoints2);
         }
-        #endregion
+
+        #endregion CorrectMatches
 
         /// <summary>
         /// filters off speckles (small regions of incorrectly computed disparity)
@@ -2443,8 +2532,8 @@ namespace OpenCvSharp
         /// <param name="img">The input 16-bit signed disparity image</param>
         /// <param name="newVal">The disparity value used to paint-off the speckles</param>
         /// <param name="maxSpeckleSize">The maximum speckle size to consider it a speckle. Larger blobs are not affected by the algorithm</param>
-        /// <param name="maxDiff">Maximum difference between neighbor disparity pixels to put them into the same blob. 
-        /// Note that since StereoBM, StereoSGBM and may be other algorithms return a fixed-point disparity map, where disparity values 
+        /// <param name="maxDiff">Maximum difference between neighbor disparity pixels to put them into the same blob.
+        /// Note that since StereoBM, StereoSGBM and may be other algorithms return a fixed-point disparity map, where disparity values
         /// are multiplied by 16, this scale factor should be taken into account when specifying this parameter value.</param>
         /// <param name="buf">The optional temporary buffer to avoid memory allocation within the function.</param>
         public static void FilterSpeckles(InputOutputArray img, double newVal, int maxSpeckleSize, double maxDiff,
@@ -2501,13 +2590,13 @@ namespace OpenCvSharp
         /// reprojects disparity image to 3D: (x,y,d)->(X,Y,Z) using the matrix Q returned by cv::stereoRectify
         /// </summary>
         /// <param name="disparity">Input single-channel 8-bit unsigned, 16-bit signed, 32-bit signed or 32-bit floating-point disparity image.</param>
-        /// <param name="_3dImage">Output 3-channel floating-point image of the same size as disparity. 
+        /// <param name="_3dImage">Output 3-channel floating-point image of the same size as disparity.
         /// Each element of _3dImage(x,y) contains 3D coordinates of the point (x,y) computed from the disparity map.</param>
         /// <param name="Q">4 x 4 perspective transformation matrix that can be obtained with stereoRectify().</param>
-        /// <param name="handleMissingValues">Indicates, whether the function should handle missing values (i.e. points where the disparity was not computed). 
-        /// If handleMissingValues=true, then pixels with the minimal disparity that corresponds to the outliers (see StereoBM::operator() ) are 
+        /// <param name="handleMissingValues">Indicates, whether the function should handle missing values (i.e. points where the disparity was not computed).
+        /// If handleMissingValues=true, then pixels with the minimal disparity that corresponds to the outliers (see StereoBM::operator() ) are
         /// transformed to 3D points with a very large Z value (currently set to 10000).</param>
-        /// <param name="ddepth">he optional output array depth. If it is -1, the output image will have CV_32F depth. 
+        /// <param name="ddepth">he optional output array depth. If it is -1, the output image will have CV_32F depth.
         /// ddepth can also be set to CV_16S, CV_32S or CV_32F.</param>
         public static void ReprojectImageTo3D(InputArray disparity,
             OutputArray _3dImage, InputArray Q,
@@ -2537,8 +2626,8 @@ namespace OpenCvSharp
         /// <param name="outVal">Output 3D affine transformation matrix 3 x 4 .</param>
         /// <param name="inliers">Output vector indicating which points are inliers.</param>
         /// <param name="ransacThreshold">Maximum reprojection error in the RANSAC algorithm to consider a point as an inlier.</param>
-        /// <param name="confidence">Confidence level, between 0 and 1, for the estimated transformation. 
-        /// Anything between 0.95 and 0.99 is usually good enough. Values too close to 1 can slow down the estimation significantly. 
+        /// <param name="confidence">Confidence level, between 0 and 1, for the estimated transformation.
+        /// Anything between 0.95 and 0.99 is usually good enough. Values too close to 1 can slow down the estimation significantly.
         /// Values lower than 0.8-0.9 can result in an incorrectly estimated transformation.</param>
         /// <returns></returns>
         public static int EstimateAffine3D(InputArray src, InputArray dst,
