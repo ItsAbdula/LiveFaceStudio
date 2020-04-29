@@ -22,10 +22,15 @@
 
         private bool onCapture = false;
 
+        private static GameObject head = null;
+
         protected override void Awake()
         {
             base.Awake();
             base.forceFrontalCamera = true;
+
+            var go = new GameObject("ResourceManager");
+            go.AddComponent<ResourceManager>();
 
             processor = new FaceProcessorLive<WebCamTexture>();
             processor.Initialize(faces.text, eyes.text, shapes.bytes);
@@ -38,6 +43,19 @@
             // performance data - some tricks to make it work faster
             processor.Performance.Downscale = 256;          // processed image is pre-scaled down to N px by long side
             processor.Performance.SkipRate = 0;             // we actually process only each Nth frame (and every frame for skipRate = 0)
+
+            {
+                head = ResourceManager.instantiatePrefab("Cube");
+                head.transform.Translate(new Vector3(-1.5f, -3.0f, 0.0f));
+            }
+        }
+
+        public static void setHeadRotation(double[] rotationVector)
+        {
+            if (head == null) return;
+
+            var coefficient = 1.0f;
+            head.transform.localEulerAngles = new Vector3(coefficient * (float)rotationVector[0], coefficient * (float)rotationVector[1], coefficient * (float)rotationVector[2]);
         }
 
         protected override bool ProcessTexture(WebCamTexture input, ref Texture2D output)

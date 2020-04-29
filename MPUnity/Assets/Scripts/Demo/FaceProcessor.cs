@@ -230,20 +230,17 @@
                 {
                     if (face.Marks == null || face.Marks.Length == 0) return;
 
-                    var frontalVector = GetFaceFrontalVector(face.Marks);
-#if DEBUG
-                    UnityEngine.Debug.Log(string.Format("X : {0}, Y : {1}", frontalVector.X, frontalVector.Y));
-#endif
+                    FaceDetectorScene.setHeadRotation(GetFaceRotation(face.Marks));
                 }
             }
         }
 
-        private Point2f GetFaceFrontalVector(Point[] marks)
+        private double[] GetFaceRotation(Point[] marks)
         {
             var imagePoints = Get2dImagePoints(marks);
             var modelPoints = Get3dModelPoints();
 
-            var cameraMat = GetCameraMatrix(processingImage.Size().Height, new Point2d(processingImage.Size().Height / 2, processingImage.Size().Width / 2));
+            var cameraMat = GetCameraMatrix(Image.Height, new Point2d(Image.Height / 2, Image.Width / 2));
             var distanceCoeffs = new double[4];
             var rotationVector = new double[4];
             var translationVector = new double[4];
@@ -251,14 +248,16 @@
             Cv2.SolvePnP(modelPoints, imagePoints, cameraMat, distanceCoeffs, out rotationVector, out translationVector);
 
             var noseEndPoint3d = new List<Point3f> { new Point3f(0, 0, 1000.0f) };
-
             var noseEndPoint2d = new Point2f[6];
-            var jacobian = new double[4, 4];
+            var jacobian = new double[1, 1];
+
             Cv2.ProjectPoints(noseEndPoint3d, rotationVector, translationVector, cameraMat, distanceCoeffs, out noseEndPoint2d, out jacobian);
 
-            var result = new Point2f(noseEndPoint2d[0].X - imagePoints[0].X, noseEndPoint2d[0].Y - imagePoints[0].Y);
+            UnityEngine.Debug.Log(string.Format("Rotation Vector X : {0}, Y : {1}, Z : {2}", rotationVector[0], rotationVector[1], rotationVector[2]));
 
-            return result;
+            //Cv2.Line(Image, imagePoints[0], noseEndPoint2d[0], new Scalar(0, 0, 255), 2);
+
+            return rotationVector;
         }
 
         private List<Point2f> Get2dImagePoints(Point[] points)
