@@ -52,7 +52,8 @@ namespace OpenCvSharp
             {
                 NativeMethods.calib3d_Rodrigues_VecToMat(vectorM.CvPtr, matrixM.CvPtr, jacobianM.CvPtr);
                 matrix = matrixM.ToRectangularArray();
-                jacobian = jacobianM.ToRectangularArray();
+                jacobian = new double[1, 1];
+                //jacobian = jacobianM.ToRectangularArray(); TODO:
             }
         }
 
@@ -659,7 +660,8 @@ namespace OpenCvSharp
                     imagePointsM.CvPtr, jacobianM.CvPtr, aspectRatio);
 
                 imagePoints = imagePointsM.ToArray();
-                jacobian = jacobianM.ToRectangularArray();
+                jacobian = new double[1, 1];
+                //jacobian = jacobianM.ToRectangularArray(); TODO:
             }
         }
 
