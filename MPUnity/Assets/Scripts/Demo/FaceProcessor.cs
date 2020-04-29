@@ -253,11 +253,47 @@
 
             Cv2.ProjectPoints(noseEndPoint3d, rotationVector, translationVector, cameraMat, distanceCoeffs, out noseEndPoint2d, out jacobian);
 
-            UnityEngine.Debug.Log(string.Format("Rotation Vector X : {0}, Y : {1}, Z : {2}", rotationVector[0], rotationVector[1], rotationVector[2]));
+            var oaMatrix = new Mat(3, 3, MatType.CV_64F);
+            var oa = OutputArray.Create(oaMatrix);
+            var ia = InputArray.Create(rotationVector);
 
-            //Cv2.Line(Image, imagePoints[0], noseEndPoint2d[0], new Scalar(0, 0, 255), 2);
+            Cv2.Rodrigues(ia, oa);
 
-            return rotationVector;
+            var projMatrix = new Mat(3, 4, MatType.CV_64F);
+            {
+                projMatrix.Set(0, 0, oa.GetMat().At<double>(0, 0));
+                projMatrix.Set(1, 0, oa.GetMat().At<double>(1, 0));
+                projMatrix.Set(2, 0, oa.GetMat().At<double>(2, 0));
+
+                projMatrix.Set(0, 1, oa.GetMat().At<double>(0, 1));
+                projMatrix.Set(1, 1, oa.GetMat().At<double>(1, 1));
+                projMatrix.Set(2, 1, oa.GetMat().At<double>(2, 1));
+
+                projMatrix.Set(0, 2, oa.GetMat().At<double>(0, 2));
+                projMatrix.Set(1, 2, oa.GetMat().At<double>(1, 2));
+                projMatrix.Set(2, 2, oa.GetMat().At<double>(2, 2));
+
+                projMatrix.Set(0, 3, translationVector[0]);
+                projMatrix.Set(1, 3, translationVector[1]);
+                projMatrix.Set(2, 3, translationVector[2]);
+            }
+
+            var cameraMatrix = new Mat(3, 3, MatType.CV_64F);
+            var rotMatrix = new Mat(3, 3, MatType.CV_64F);
+            var translateVector = new Mat(4, 1, MatType.CV_64F);
+            var eulerAngles = new Mat(3, 1, MatType.CV_64F);
+
+            Cv2.DecomposeProjectionMatrix(projMatrix, cameraMatrix, rotMatrix, translateVector, null, null, null, eulerAngles);
+
+            var pitch = eulerAngles.At<double>(0) * UnityEngine.Mathf.Deg2Rad;
+            var yaw = eulerAngles.At<double>(1) * UnityEngine.Mathf.Deg2Rad;
+            var roll = eulerAngles.At<double>(2) * UnityEngine.Mathf.Deg2Rad;
+
+            pitch = Math.Asin(Math.Sin(pitch)) * UnityEngine.Mathf.Rad2Deg;
+            roll = -Math.Asin(Math.Sin(roll)) * UnityEngine.Mathf.Rad2Deg;
+            yaw = Math.Asin(Math.Sin(yaw)) * UnityEngine.Mathf.Rad2Deg;
+
+            return new double[3] { pitch, yaw, roll };
         }
 
         private List<Point2f> Get2dImagePoints(Point[] points)
@@ -281,8 +317,8 @@
             {
                 new Point3f(0.0f, 0.0f, 0.0f), //The first must be (0,0,0) while using POSIT
                 new Point3f(0.0f, -330.0f, -65.0f),
-                new Point3f(-225.0f, 170.0f, -135.0f),
-                new Point3f(225.0f, 170.0f, -135.0f),
+                new Point3f(-225.0f, 170.0f, -135.0f), //new Point3f(165.0f, 170.0f, -135.0f),
+                new Point3f(225.0f, 170.0f, -135.0f), //new Point3f(165.0f, 170.0f, -135.0f),
                 new Point3f(-150.0f, -150.0f, -125.0f),
                 new Point3f(150.0f, -150.0f, -125.0f)
             };
