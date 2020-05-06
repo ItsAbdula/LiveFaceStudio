@@ -33,5 +33,6 @@ public class ModelParameters : MonoBehaviour
     // 입
     [Range(0f, 1f)]
     public float MouthOpen = 0;
+
 }
 
