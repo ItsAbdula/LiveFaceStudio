@@ -11,7 +11,13 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Test01.unity
     guid: cdc4c782e00867d47bc61d3c4b6259f5
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Test02.unity
     guid: e78c21d77f8dcb14694bc9153531e412
+  - enabled: 0
+    path: Assets/Scenes/Test03.unity
+    guid: 8fde5d98765fa5643aaac1b64c63a880
+  - enabled: 1
+    path: Assets/GoogleARCore/Examples/AugmentedFaces/Scenes/AugmentedFaces.unity
+    guid: 7d2be221c0e8f4e259a08279fab0da42
   m_configObjects: {}

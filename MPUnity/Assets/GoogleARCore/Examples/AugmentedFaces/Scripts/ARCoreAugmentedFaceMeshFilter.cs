@@ -34,6 +34,7 @@ namespace GoogleARCore.Examples.AugmentedFaces
         /// If true, this component will update itself using the first AugmentedFace detected by ARCore.
         /// </summary>
         public bool AutoBind = false;
+        public ARCoreFaceLandmark landmark;
 
         private AugmentedFace m_AugmentedFace = null;
         private List<AugmentedFace> m_AugmentedFaceList = null;
@@ -107,6 +108,9 @@ namespace GoogleARCore.Examples.AugmentedFaces
         {
             m_AugmentedFace.GetVertices(m_MeshVertices);
             m_AugmentedFace.GetNormals(m_MeshNormals);
+
+            if(landmark != null)
+                landmark.setFaceLandmark(m_MeshVertices);
 
             if (!m_MeshInitialized)
             {
