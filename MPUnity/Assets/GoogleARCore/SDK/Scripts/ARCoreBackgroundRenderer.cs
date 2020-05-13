@@ -181,7 +181,7 @@ namespace GoogleARCore
             const string topLeftRightVar = "_UvTopLeftRight";
             const string bottomLeftRightVar = "_UvBottomLeftRight";
 
-            BackgroundMaterial.SetTexture(mainTexVar, Frame.CameraImage.Texture);
+            //BackgroundMaterial.SetTexture(mainTexVar, Frame.CameraImage.Texture);
 
             var uvQuad = Frame.CameraImage.TextureDisplayUvs;
             BackgroundMaterial.SetVector(

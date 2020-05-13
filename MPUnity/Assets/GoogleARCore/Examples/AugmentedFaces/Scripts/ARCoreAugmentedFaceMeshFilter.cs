@@ -109,8 +109,11 @@ namespace GoogleARCore.Examples.AugmentedFaces
             m_AugmentedFace.GetVertices(m_MeshVertices);
             m_AugmentedFace.GetNormals(m_MeshNormals);
 
-            if(landmark != null)
+            if (landmark != null)
+            {
                 landmark.setFaceLandmark(m_MeshVertices);
+                landmark.setFaceRotation(m_AugmentedFace.CenterPose.rotation);
+            }
 
             if (!m_MeshInitialized)
             {

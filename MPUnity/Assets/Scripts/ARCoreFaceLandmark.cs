@@ -57,7 +57,10 @@ public class ARCoreFaceLandmark : MonoBehaviour
 
 
     public Text logText;
+    public GameObject testObj;
     ARFaceLandmark[] arFaceLandmark;
+
+    Quaternion faceRotation;
 
     // Start is called before the first frame update
     void Start()
@@ -95,4 +98,12 @@ public class ARCoreFaceLandmark : MonoBehaviour
     {
         return arFaceLandmark[(int)position].getRect();
     }
+
+    public void setFaceRotation(Quaternion rotation)
+    {
+        faceRotation = rotation;
+        logText.text = logText.text + "rotation : " + faceRotation;
+        testObj.transform.rotation = rotation;
+    }
+    public Quaternion getFaceRotation() { return faceRotation; }
 }
