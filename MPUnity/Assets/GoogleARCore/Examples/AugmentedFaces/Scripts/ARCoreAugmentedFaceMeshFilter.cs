@@ -70,7 +70,7 @@ namespace GoogleARCore.Examples.AugmentedFaces
         public void Awake()
         {
             m_Mesh = new Mesh();
-            GetComponent<MeshFilter>().mesh = m_Mesh;
+            //GetComponent<MeshFilter>().mesh = m_Mesh;
             m_AugmentedFaceList = new List<AugmentedFace>();
         }
 
@@ -111,8 +111,8 @@ namespace GoogleARCore.Examples.AugmentedFaces
 
             if (landmark != null)
             {
-                landmark.setFaceLandmark(m_MeshVertices);
                 landmark.setFaceRotation(m_AugmentedFace.CenterPose.rotation);
+                landmark.setFaceLandmark(m_MeshVertices);
             }
 
             if (!m_MeshInitialized)

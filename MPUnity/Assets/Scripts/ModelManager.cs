@@ -14,6 +14,8 @@ public class ModelManager : MonoBehaviour
     public GameObject[] modelObjects;
     public ModelInfos.Type currentModelType;
 
+    public ARCoreFaceLandmark arCoreFaceLandmark;
+
     private CubismModel cubismModel;
     private ModelParameters modelParam;
     
@@ -41,6 +43,15 @@ public class ModelManager : MonoBehaviour
     // https://docs.live2d.com/cubism-sdk-tutorials/about-parameterupdating-of-model/?locale=ja
     private void LateUpdate()
     {
+        if(arCoreFaceLandmark != null)
+        {
+            Quaternion rotation = arCoreFaceLandmark.getFaceRotation();
+            Vector3 euler = rotation.eulerAngles;
+            modelParam.FaceAngleX = euler.y >= 180 ? euler.y - 360 : euler.y;
+            modelParam.FaceAngleY = euler.x >= 180 ? euler.x - 360 : euler.x;
+            modelParam.FaceAngleZ = euler.z >= 180 ? euler.z - 360 : euler.z;
+
+        }
         UpdateCubismParam(modelParam, currentModelType);
     }
 
