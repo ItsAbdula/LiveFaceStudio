@@ -33,7 +33,8 @@ struct ARFaceLandmark
         for (int i = 0; i < (int)direction.MAX; ++i)
         {
             Vector3 point = verticeList[pointIndex[i]];
-            pointList.Add(verticeList[pointIndex[i]]);
+            point = point * 100f;
+            pointList.Add(point);
         }
         float x = pointList[(int)direction.LEFT].x;
         float y = pointList[(int)direction.UP].y;
@@ -85,18 +86,11 @@ public class ARCoreFaceLandmark : MonoBehaviour
         {
             arFaceLandmark[i].setPoint(verticeList);
             Rect rect = arFaceLandmark[i].getRect();
-            rect.x *= 100;
-            rect.y *= 100;
-            rect.height *= 100;
-            rect.width *= 100;
             if (logText != null)
             {
                 string str = "";
                 switch (i)
                 {
-                    case 0:
-                        str = "얼굴크기 : " + rect.height + "," + rect.width;
-                        break;
                     case 1:
                         str = "오른쪽눈 : " + rect.height + "," + rect.width;
                         break;
@@ -104,7 +98,7 @@ public class ARCoreFaceLandmark : MonoBehaviour
                         str = "왼쪽눈 : " + rect.height + "," + rect.width;
                         break;
                     case 3:
-                        str = "입크기 : " + rect.height + "," + rect.width;
+                        str = string.Format("H : {0:f3} , W : {1:f3}, H/W : {2:f3}", rect.height, rect.width, rect.height / rect.width);
                         break;
                 }
                 logText.text = logText.text + str + "\n";
@@ -127,7 +121,6 @@ public class ARCoreFaceLandmark : MonoBehaviour
         faceRotation = rotation;
         if(logText != null) logText.text = "rotation : " + faceRotation + "\nEuler : " + faceRotation.eulerAngles + "\n" ;
         testObj.transform.rotation = rotation;
-        Debug.Log("Rotation : " + rotation.eulerAngles);
     }
     public Quaternion getFaceRotation() { return faceRotation; }
 }

@@ -34,5 +34,8 @@ public class ModelParameters : MonoBehaviour
     [Range(0f, 1f)]
     public float MouthOpen = 0;
 
+    [Range(-2f, 1f)]
+    public float MouthForm = 0;
+
 }
 

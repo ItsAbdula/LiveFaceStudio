@@ -45,12 +45,26 @@ public class ModelManager : MonoBehaviour
     {
         if(arCoreFaceLandmark != null)
         {
+            Rect mouseRect = arCoreFaceLandmark.getRectByPosition(FaceLandmarkPosition.MOUSE);
+            if(mouseRect!=null)
+            {
+                float mouseOpen = mouseRect.height/mouseRect.width-0.1f;
+                modelParam.MouthOpen = mouseOpen * 2;
+                
+                modelParam.MouthForm = mouseRect.width - 4.6f;
+
+                Debug.Log(modelParam.MouthForm);
+            }
             Quaternion rotation = arCoreFaceLandmark.getFaceRotation();
             Vector3 euler = rotation.eulerAngles;
-            modelParam.FaceAngleX = euler.y >= 180 ? euler.y - 360 : euler.y;
-            modelParam.FaceAngleY = euler.x >= 180 ? euler.x - 360 : euler.x;
-            modelParam.FaceAngleZ = euler.z >= 180 ? euler.z - 360 : euler.z;
-
+            if(euler.x!=0 || euler.y!=0 || euler.z!=0)
+            {
+                modelParam.FaceAngleX = euler.y >= 180 ? euler.y - 360 : euler.y;
+                modelParam.FaceAngleX *= 2;
+                modelParam.FaceAngleY = euler.x >= 180 ? euler.x - 360 : euler.x;
+                modelParam.FaceAngleY *= 2;
+                modelParam.FaceAngleZ = euler.z >= 180 ? euler.z - 360 : euler.z;
+            }
         }
         UpdateCubismParam(modelParam, currentModelType);
     }
@@ -68,5 +82,6 @@ public class ModelManager : MonoBehaviour
         cubismModel.Parameters[ModelInfos.paramIndices[(int)type, 7]].Value = model.LEyebrowHeight;
         cubismModel.Parameters[ModelInfos.paramIndices[(int)type, 8]].Value = model.REyebrowHeight;
         cubismModel.Parameters[ModelInfos.paramIndices[(int)type, 9]].Value = model.MouthOpen;
+        cubismModel.Parameters[ModelInfos.paramIndices[(int)type, 10]].Value = model.MouthForm;
     }
 }

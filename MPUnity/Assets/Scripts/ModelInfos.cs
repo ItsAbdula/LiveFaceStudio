@@ -12,16 +12,16 @@ public static class ModelInfos
     }
 
     public const int MODEL_COUNT = 5;
-    public const int MODEL_PARAM_COUNT = 10;
+    public const int MODEL_PARAM_COUNT = 11;
 
     // ModelParameters를 모델 별 CubismParameter 에 대응시키기 위한 인덱스
     public static readonly int[,] paramIndices = new int[MODEL_COUNT, MODEL_PARAM_COUNT]
     {
-        {0, 1, 2, 3, 5, 7, 8, 9, 10, 18},   // Epsilon
-        {0, 1, 2, 3, 5, 7, 8, 14, 15, 23},  // Koharu
-        {0, 1, 2, 3, 5, 8, 9, 11, 12, 20},  // UnityChan
-        {0, 1, 2, 3, 4, 5, 6, 7, 8, 16},    // Hibiki
-        {0, 1, 2, 4, 6, 8, 9, 10 ,11, 13}   // Hiyori
+        {0, 1, 2, 3, 5, 7, 8, 9, 10, 18, 17},   // Epsilon
+        {0, 1, 2, 3, 5, 7, 8, 14, 15, 23, 22},  // Koharu
+        {0, 1, 2, 3, 5, 8, 9, 11, 12, 20, 19},  // UnityChan
+        {0, 1, 2, 3, 4, 5, 6, 7, 8, 16, 15},    // Hibiki
+        {0, 1, 2, 4, 6, 8, 9, 10 ,11, 13, 12}   // Hiyori
     };
 
     // 모델 별 parameter 범위 변환도 필요하다. 추가 예정
