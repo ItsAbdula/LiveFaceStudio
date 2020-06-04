@@ -56,10 +56,7 @@ public enum FaceLandmarkPosition
 
 public class ARCoreFaceLandmark : MonoBehaviour
 {
-
-
     public Text logText;
-    public GameObject testObj;
     ARFaceLandmark[] arFaceLandmark;
 
     Quaternion faceRotation;
@@ -70,7 +67,7 @@ public class ARCoreFaceLandmark : MonoBehaviour
         //RIGHT_EYE 159(up), 133(right), 145(down), 33(left)
         //LEFT_EYE 386(up), 263(right), 374(down), 362(left)
         //MOUSE 12(up), 292(right), 15(down), 62(left)
-        //10(face up), 366(face right), 152(face down), 123(face left)
+        //FACE 10(face up), 366(face right), 152(face down), 123(face left)
         arFaceLandmark = new ARFaceLandmark[]
         {
             new ARFaceLandmark(10, 366, 152, 123), // FACE
@@ -92,16 +89,16 @@ public class ARCoreFaceLandmark : MonoBehaviour
                 switch (i)
                 {
                     case 1:
-                        str = "오른쪽눈 : " + rect.height + "," + rect.width;
+                        str = string.Format("오른쪽눈 : {0:f3}, {1:f3}\n", rect.height, rect.width);
                         break;
                     case 2:
-                        str = "왼쪽눈 : " + rect.height + "," + rect.width;
+                        str = string.Format("왼쪽눈 : {0:f3}, {1:f3}\n", rect.height, rect.width);
                         break;
                     case 3:
-                        str = string.Format("H : {0:f3} , W : {1:f3}, H/W : {2:f3}", rect.height, rect.width, rect.height / rect.width);
+                        str = string.Format("입H : {0:f3} , W : {1:f3}, H/W : {2:f3}\n", rect.height, rect.width, rect.height / rect.width);
                         break;
                 }
-                logText.text = logText.text + str + "\n";
+                logText.text = logText.text + str;
             }
         }
     }
@@ -120,7 +117,6 @@ public class ARCoreFaceLandmark : MonoBehaviour
     {
         faceRotation = rotation;
         if(logText != null) logText.text = "rotation : " + faceRotation + "\nEuler : " + faceRotation.eulerAngles + "\n" ;
-        testObj.transform.rotation = rotation;
     }
     public Quaternion getFaceRotation() { return faceRotation; }
 }

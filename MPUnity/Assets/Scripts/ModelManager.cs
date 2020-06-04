@@ -46,24 +46,36 @@ public class ModelManager : MonoBehaviour
         if(arCoreFaceLandmark != null)
         {
             Rect mouseRect = arCoreFaceLandmark.getRectByPosition(FaceLandmarkPosition.MOUSE);
-            if(mouseRect!=null)
+            if(mouseRect.height != 0)
             {
-                float mouseOpen = mouseRect.height/mouseRect.width-0.1f;
+                float mouseOpen = mouseRect.height/mouseRect.width-0.12f;
                 modelParam.MouthOpen = mouseOpen * 2;
                 
                 modelParam.MouthForm = mouseRect.width - 4.6f;
-
-                Debug.Log(modelParam.MouthForm);
             }
+
             Quaternion rotation = arCoreFaceLandmark.getFaceRotation();
             Vector3 euler = rotation.eulerAngles;
             if(euler.x!=0 || euler.y!=0 || euler.z!=0)
             {
-                modelParam.FaceAngleX = euler.y >= 180 ? euler.y - 360 : euler.y;
-                modelParam.FaceAngleX *= 2;
-                modelParam.FaceAngleY = euler.x >= 180 ? euler.x - 360 : euler.x;
-                modelParam.FaceAngleY *= 2;
-                modelParam.FaceAngleZ = euler.z >= 180 ? euler.z - 360 : euler.z;
+                float angleX = euler.y >= 180 ? euler.y - 360 : euler.y;
+                float angleY = euler.x >= 180 ? euler.x - 360 : euler.x;
+                float angleZ = euler.z >= 180 ? euler.z - 360 : euler.z;
+                angleX *= 2;
+                angleY *= 2;
+                //angleZ *= -1;
+                if(Mathf.Abs(modelParam.FaceAngleX-angleX)>=1)
+                {
+                    modelParam.FaceAngleX = angleX;
+                }
+                if (Mathf.Abs(modelParam.FaceAngleY - angleY) >= 1)
+                {
+                    modelParam.FaceAngleY = angleY;
+                }
+                if (Mathf.Abs(modelParam.FaceAngleZ - angleZ) >= 1)
+                {
+                    modelParam.FaceAngleZ = angleZ;
+                }
             }
         }
         UpdateCubismParam(modelParam, currentModelType);
