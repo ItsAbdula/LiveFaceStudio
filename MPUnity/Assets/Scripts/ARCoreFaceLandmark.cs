@@ -61,6 +61,11 @@ public class ARCoreFaceLandmark : MonoBehaviour
 
     Quaternion faceRotation;
 
+    GoogleARCore.AugmentedFace m_AugmentedFace = null;
+    private List<GoogleARCore.AugmentedFace> m_AugmentedFaceList = null;
+
+    float eyeHeight=1;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -75,6 +80,28 @@ public class ARCoreFaceLandmark : MonoBehaviour
             new ARFaceLandmark(386, 263, 374, 362), // LEFT_EYE
             new ARFaceLandmark(12, 292, 15, 62) // MOUSE
         };
+
+        m_AugmentedFaceList = new List<GoogleARCore.AugmentedFace>();
+        StartCoroutine(CorutineEyeBlink(2.0f));
+        Screen.sleepTimeout = SleepTimeout.NeverSleep;
+    }
+
+    void Update()
+    {
+        m_AugmentedFaceList.Clear();
+        GoogleARCore.Session.GetTrackables<GoogleARCore.AugmentedFace>(m_AugmentedFaceList, GoogleARCore.TrackableQueryFilter.All);
+        if (m_AugmentedFaceList.Count != 0)
+        {
+            m_AugmentedFace = m_AugmentedFaceList[0];
+        }
+
+        if (m_AugmentedFace == null) return;
+
+        setFaceRotation(m_AugmentedFace.CenterPose.rotation);
+        List<Vector3> verticeList = new List<Vector3>();
+        m_AugmentedFace.GetVertices(verticeList);
+        setFaceLandmark(verticeList);
+        logText.text = eyeHeight.ToString();
     }
 
     public void setFaceLandmark(List<Vector3> verticeList)
@@ -83,23 +110,6 @@ public class ARCoreFaceLandmark : MonoBehaviour
         {
             arFaceLandmark[i].setPoint(verticeList);
             Rect rect = arFaceLandmark[i].getRect();
-            if (logText != null)
-            {
-                string str = "";
-                switch (i)
-                {
-                    case 1:
-                        str = string.Format("오른쪽눈 : {0:f3}, {1:f3}\n", rect.height, rect.width);
-                        break;
-                    case 2:
-                        str = string.Format("왼쪽눈 : {0:f3}, {1:f3}\n", rect.height, rect.width);
-                        break;
-                    case 3:
-                        str = string.Format("입H : {0:f3} , W : {1:f3}, H/W : {2:f3}\n", rect.height, rect.width, rect.height / rect.width);
-                        break;
-                }
-                logText.text = logText.text + str;
-            }
         }
     }
 
@@ -116,7 +126,27 @@ public class ARCoreFaceLandmark : MonoBehaviour
     public void setFaceRotation(Quaternion rotation)
     {
         faceRotation = rotation;
-        if(logText != null) logText.text = "rotation : " + faceRotation + "\nEuler : " + faceRotation.eulerAngles + "\n" ;
     }
     public Quaternion getFaceRotation() { return faceRotation; }
+    public float getEyeHeight() { return eyeHeight; }
+
+    IEnumerator CorutineEyeBlink(float second)
+    {
+        bool eyeOpen = true;
+        while(true)
+        {
+            if (eyeOpen)
+            {
+                eyeHeight = 0;
+                eyeOpen = false;
+                yield return null;
+            }
+            else
+            {
+                eyeHeight = 1;
+                eyeOpen = true;
+                yield return new WaitForSeconds(second);
+            }
+        }
+    }
 }
