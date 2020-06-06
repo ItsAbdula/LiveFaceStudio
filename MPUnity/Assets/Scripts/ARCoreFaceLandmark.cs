@@ -106,10 +106,13 @@ public class ARCoreFaceLandmark : MonoBehaviour
 
     public void setFaceLandmark(List<Vector3> verticeList)
     {
-        for (int i = 0; i < (int)FaceLandmarkPosition.MAX; ++i)
+        if (verticeList.Count > 0)
         {
-            arFaceLandmark[i].setPoint(verticeList);
-            Rect rect = arFaceLandmark[i].getRect();
+            for (int i = 0; i < (int)FaceLandmarkPosition.MAX; ++i)
+            {
+                arFaceLandmark[i].setPoint(verticeList);
+                Rect rect = arFaceLandmark[i].getRect();
+            }
         }
     }
 
