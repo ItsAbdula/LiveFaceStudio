@@ -140,6 +140,8 @@ namespace GetSocialSdk.Capture.Scripts
             }
         }
 
+        public string GetFilePath() { return _resultFilePath; }
+
         #endregion
 
         #region Unity methods
@@ -200,7 +202,7 @@ namespace GetSocialSdk.Capture.Scripts
             var fileName = string.Format("result-{0}.gif", System.DateTime.Now.ToString("yyyyMMddHHmmss"));
             _resultFilePath = GetResultDirectory() /*+ Path.DirectorySeparatorChar*/ + fileName;
             Debug.Log(_resultFilePath);
-            StoreWorker.Instance.Start(ThreadPriority.BelowNormal, maxCapturedFrames);
+            StoreWorker.Instance.Start(ThreadPriority.Highest, maxCapturedFrames);
         }
         
         private void CleanUp()
@@ -210,7 +212,7 @@ namespace GetSocialSdk.Capture.Scripts
                 File.Delete(_resultFilePath);
             }
         }
-        
+
         #endregion
         
     }    

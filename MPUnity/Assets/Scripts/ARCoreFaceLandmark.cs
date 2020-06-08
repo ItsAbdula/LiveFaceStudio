@@ -106,7 +106,7 @@ public class ARCoreFaceLandmark : MonoBehaviour
 
     public void setFaceLandmark(List<Vector3> verticeList)
     {
-        if (verticeList.Count > 0)
+        //if (verticeList.Count > 0)
         {
             for (int i = 0; i < (int)FaceLandmarkPosition.MAX; ++i)
             {
