@@ -46,7 +46,7 @@ public class CaptureManager : MonoBehaviour
         // generate gif
         Action<byte[]> result = bytes =>
         {
-            successSave();
+            successSave(capture.GetFilePath());
         };
         capture.GenerateCapture(result);
 
@@ -68,9 +68,20 @@ public class CaptureManager : MonoBehaviour
         }
     }
 
-    public void successSave()
+    public void successSave(string result)
     {
         buttonText.text = "Record";
         recordBtn.enabled = true;
+
+        AndroidJavaClass classPlayer = new AndroidJavaClass("com.unity3d.player.UnityPlayer");
+        AndroidJavaObject objActivity = classPlayer.GetStatic<AndroidJavaObject>("currentActivity");
+        AndroidJavaClass classUri = new AndroidJavaClass("android.net.Uri");
+        AndroidJavaObject objIntent = new AndroidJavaObject("android.content.Intent", new object[2]
+        {
+            "android.intent.action.MEDIA_SCANNER_SCAN_FILE",
+            classUri.CallStatic<AndroidJavaObject>("parse","file://"+result)
+        });
+        objActivity.Call("sendBroadcast", objIntent);
+        Application.OpenURL(result);
     }
 }
