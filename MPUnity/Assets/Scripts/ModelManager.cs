@@ -78,9 +78,10 @@ public class ModelManager : MonoBehaviour
                 }
             }
 
-            float eyeHeight = arCoreFaceLandmark.getEyeHeight();
-            modelParam.LEyeOpen = eyeHeight;
-            modelParam.REyeOpen = eyeHeight;
+            float leftEyeHeight, rightEyeHeight;
+            arCoreFaceLandmark.getEyeHeight(out leftEyeHeight, out rightEyeHeight);
+            modelParam.LEyeOpen = leftEyeHeight;
+            modelParam.REyeOpen = rightEyeHeight;
         }
         UpdateCubismParam(modelParam, currentModelType);
     }

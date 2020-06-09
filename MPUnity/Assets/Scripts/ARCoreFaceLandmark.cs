@@ -64,7 +64,12 @@ public class ARCoreFaceLandmark : MonoBehaviour
     GoogleARCore.AugmentedFace m_AugmentedFace = null;
     private List<GoogleARCore.AugmentedFace> m_AugmentedFaceList = null;
 
-    float eyeHeight=1;
+    float leftEyeHeight=1;
+    float rightEyeHeight = 1;
+    float prevLeftEye;
+    float prevRightEye;
+    bool eyeOpen;
+    Coroutine playingCoroutine;
 
     // Start is called before the first frame update
     void Start()
@@ -82,8 +87,11 @@ public class ARCoreFaceLandmark : MonoBehaviour
         };
 
         m_AugmentedFaceList = new List<GoogleARCore.AugmentedFace>();
-        StartCoroutine(CorutineEyeBlink(2.0f));
+        playingCoroutine = StartCoroutine(CorutineEyeBlink(2.0f));
         Screen.sleepTimeout = SleepTimeout.NeverSleep;
+        prevLeftEye = 1;
+        prevRightEye = 1;
+        eyeOpen = true;
     }
 
     void Update()
@@ -101,7 +109,6 @@ public class ARCoreFaceLandmark : MonoBehaviour
         List<Vector3> verticeList = new List<Vector3>();
         m_AugmentedFace.GetVertices(verticeList);
         setFaceLandmark(verticeList);
-        logText.text = eyeHeight.ToString();
     }
 
     public void setFaceLandmark(List<Vector3> verticeList)
@@ -130,23 +137,55 @@ public class ARCoreFaceLandmark : MonoBehaviour
     {
         faceRotation = rotation;
     }
+
+    public void toggleAutoEyeBlink()
+    {
+        if(playingCoroutine == null)
+        {
+            playingCoroutine = StartCoroutine(CorutineEyeBlink(2.0f));
+        }
+        else
+        {
+            StopCoroutine(playingCoroutine);
+            playingCoroutine = null;
+        }
+    }
+
+    public void setLeftEyeHeight(Slider obj)
+    {
+        prevLeftEye = obj.value;
+        if (eyeOpen) leftEyeHeight = prevLeftEye;
+    }
+
+    public void setRightEyeHeight(Slider obj)
+    {
+        prevRightEye = obj.value;
+        if (eyeOpen) rightEyeHeight = prevRightEye;
+    }
+
     public Quaternion getFaceRotation() { return faceRotation; }
-    public float getEyeHeight() { return eyeHeight; }
+
+    public void getEyeHeight(out float leftEye, out float rightEye)
+    {
+        leftEye = leftEyeHeight;
+        rightEye = rightEyeHeight;
+    }
 
     IEnumerator CorutineEyeBlink(float second)
     {
-        bool eyeOpen = true;
         while(true)
         {
             if (eyeOpen)
             {
-                eyeHeight = 0;
+                leftEyeHeight = 0;
+                rightEyeHeight = 0;
                 eyeOpen = false;
                 yield return null;
             }
             else
             {
-                eyeHeight = 1;
+                leftEyeHeight = prevLeftEye;
+                rightEyeHeight = prevRightEye;
                 eyeOpen = true;
                 yield return new WaitForSeconds(second);
             }
