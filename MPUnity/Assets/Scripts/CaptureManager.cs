@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Android;
 
 public class CaptureManager : MonoBehaviour
 {
@@ -56,7 +57,17 @@ public class CaptureManager : MonoBehaviour
 
     public void onClickRecordBtn()
     {
-        if(isRecord)
+        if (Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite) == false)
+        {
+            Permission.RequestUserPermission(Permission.ExternalStorageWrite);
+
+            if (Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite) == false)
+            {
+                return;
+            }
+        }
+
+        if (isRecord)
         {
             isRecord = false;
             FinishRecord();
