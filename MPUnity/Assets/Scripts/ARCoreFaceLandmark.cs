@@ -64,7 +64,7 @@ public class ARCoreFaceLandmark : MonoBehaviour
     GoogleARCore.AugmentedFace m_AugmentedFace = null;
     private List<GoogleARCore.AugmentedFace> m_AugmentedFaceList = null;
 
-    float leftEyeHeight=1;
+    float leftEyeHeight = 1;
     float rightEyeHeight = 1;
     float prevLeftEye;
     float prevRightEye;
